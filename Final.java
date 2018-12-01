@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Scanner;
 
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +25,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.RadioButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -57,7 +61,7 @@ public class Final extends Application {
 	public void start(Stage primaryStage) {
 		// Stage and Scene
 		
-		primaryStage.setTitle("Stage and Scene");
+		primaryStage.setTitle("Meal Planner");
 		BorderPane bPane = new BorderPane();
 		bPane.setPrefSize(2000, 1000);
 		
@@ -97,48 +101,24 @@ public class Final extends Application {
 		toReturn.setPrefSize(1325,850);
 		toReturn.autosize();
 		toReturn.setBackground(new Background(new BackgroundFill(Color.rgb(158, 53, 74), null, new Insets(0))));
-		//toReturn.setBackground(new Background("fx-background: rgb(249, 201, 207)"));
-//		Rectangle rectangle2 = new Rectangle(1000,900,Color.rgb(158, 53, 74));
-//		rectangle2.relocate(0,0);
-//	   	rectangle2.autosize();
-//	    toReturn.getChildren().addAll(rectangle2);
 		
 		BorderPane top = new BorderPane();
 		top.setPrefHeight(80);
 		HBox hbox = addHBox();
 		hbox.setPrefHeight(80);
 		
-		//Button buttonAddFilter = newButton("Add Filter",300, 20);		
 		Button buttonDelete = newButton("Delete A Filter",300, 20);	
 		buttonDelete.setOnMouseReleased(e -> deleteAFilterPopUp());
 		Button buttonClear = newButton("Clear All Filters",300, 20);
 	
-		TextField input1 = new TextField();
-		input1.setMaxHeight(20); input1.setMaxWidth(300);
-		input1.setPrefSize(300, 20);
-		input1.setPromptText("Add Name-based Filter");
-		input1.setFocusTraversable(false);
-		input1.setTooltip(new Tooltip("ex: app"));
-		
-		TextField input2 = new TextField();
-		input2.setMaxHeight(20); input2.setMaxWidth(300);
-		input2.setPrefSize(300, 20);
-		input2.setPromptText("Add Greater than Calorie Filter");
-		input2.setFocusTraversable(false);
-		input2.setTooltip(new Tooltip("ex: 500"));
-		
-		TextField input3 = new TextField();
-		input3.setMaxHeight(20); input3.setMaxWidth(300);
-		input3.setPrefSize(300, 20);
-		input3.setPromptText("Add Less than Calorie Filter");
-		input3.setFocusTraversable(false);
-		
+		Button buttonFoodNameFilter = newButton("Add Food Name Filter",300, 20);	
+		buttonFoodNameFilter.setOnMouseReleased(e -> foodNameFilterPopUp());
+		Button buttonNutritionalFilter = newButton("Add Nutritional Filter",300, 20);	
+		buttonNutritionalFilter.setOnMouseReleased(e -> nutritionalFilterPopUp());
 		Button buttonViewFilter = newButton("View All Filters",300, 20);
-
 		buttonViewFilter.setOnMouseReleased(e -> filterPopUp());
 		
-
-		hbox.getChildren().addAll(buttonClear,buttonDelete, input1, input2, input3, buttonViewFilter);
+		hbox.getChildren().addAll(buttonClear,buttonDelete, buttonFoodNameFilter, buttonNutritionalFilter, buttonViewFilter);
 		toReturn.setTop(hbox);
 	
 		
@@ -149,8 +129,10 @@ public class Final extends Application {
 		//hbox.setPrefSize(1000,50);
 		
 		Button buttonSaveFoodList = newButton("Save Food List to File",200, 20);	
-		Button buttonNewFoodList = newButton("Load New Food List",200, 20);		
+		Button buttonNewFoodList = newButton("Load New Food List",200, 20);
+		buttonNewFoodList.setOnMouseReleased(e -> loadFromFilePopUp());
 		Button buttonNewFoodItem = newButton("Add New Food Item",200, 20);
+		buttonNewFoodItem.setOnMouseReleased(e -> newFoodItemPopUp());
 		
 		hbox2.getChildren().addAll(buttonSaveFoodList,buttonNewFoodList,buttonNewFoodItem);
 		bottom.setLeft(hbox2);
@@ -194,9 +176,6 @@ public class Final extends Application {
 		foodListPane.setBackground(new Background(new BackgroundFill(Color.rgb(249, 201, 207), null, new Insets(0))));
 		foodListPane.setPrefWidth(900);
 		foodListPane.autosize();
-    	
-    	ScrollPane scrollFoodList = newScrollPane();
-    	scrollFoodList.setContent(foodListPane);
     	
     	leftCenter.setCenter(foodListPane);
     	leftCenter.setLeft(leftLeft);
@@ -281,6 +260,7 @@ public class Final extends Application {
 			BorderPane toAdd2 = new BorderPane();
 			toAdd2.setPrefHeight(50);
 			Button buttonDeleteFilter = newButton("Delete Filter", 200, 20);
+			buttonDeleteFilter.setOnMouseReleased(e -> deleteStage.close());
 			buttonDeleteFilter.setAlignment(Pos.BASELINE_CENTER);
 			toAdd2.setCenter(buttonDeleteFilter);
 			popUp.setBottom(toAdd2);
@@ -306,6 +286,14 @@ public class Final extends Application {
 			toAdd.setPrefHeight(50);
 			toAdd.setCenter(t4);
 			popUp.setTop(toAdd);
+			
+			BorderPane toAdd2 = new BorderPane();
+			toAdd2.setPrefHeight(50);
+			Button buttonAccept = newButton("Accept", 200, 20);
+			buttonAccept.setOnMouseReleased(e -> mealStage.close());
+			buttonAccept.setAlignment(Pos.BASELINE_CENTER);
+			toAdd2.setCenter(buttonAccept);
+			popUp.setBottom(toAdd2);
 			
 			Scene scene = new Scene(popUp, 600, 300, Color.rgb(255, 239, 229));
 			mealStage.setScene(scene);
@@ -358,7 +346,8 @@ public class Final extends Application {
 			
 			BorderPane toAdd2 = new BorderPane();
 			toAdd2.setPrefHeight(50);
-			Button buttonDeleteFilter = newButton("Delete Filter", 200, 20);
+			Button buttonDeleteFilter = newButton("Accept Filters", 200, 20);
+			buttonDeleteFilter.setOnMouseReleased(e -> filterStage.close());
 			buttonDeleteFilter.setAlignment(Pos.BASELINE_CENTER);
 			toAdd2.setCenter(buttonDeleteFilter);
 			popUp.setBottom(toAdd2);
@@ -368,16 +357,251 @@ public class Final extends Application {
 			filterStage.show();
 		}
 		
-		private ScrollPane newScrollPane() {
-			ScrollPane rightPane = new ScrollPane();
-            rightPane.setStyle("-fx-alignment: top-right");
-            rightPane.setStyle("-fx-border-color: pink");
-            rightPane.setStyle("-fx-hbar-policy: always");
+		private void loadFromFilePopUp() {
+			Stage mealStage = new Stage();
+			mealStage.setTitle("Load Foods from File");
+			
+			BorderPane popUp = new BorderPane();
+			popUp.setPrefSize(300,600);
+			popUp.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(15,15,15,15))));
+			
+			Text t4 = newHeaderText("LOAD FOODS FROM FILE", 30, 105, 10, 21);
+			t4.setTextAlignment(TextAlignment.CENTER);
+			t4.setCache(true);
+			
+			BorderPane toAdd = new BorderPane();
+			toAdd.setPrefHeight(50);
+			toAdd.setCenter(t4);
+			popUp.setTop(toAdd);
+			
+			BorderPane toAdd2 = new BorderPane();
+			
+			HBox toAdd3 = addHBox();
+			Label enterNumber = new Label("Enter File Name");
+			TextField enterNumberField = new TextField();
+			//enterNumberField.setTooltip(new Tooltip("Enter text"));
+			enterNumberField.setPromptText("Ex: foods.txt");
+			toAdd3.getChildren().addAll(enterNumber,enterNumberField);
+			toAdd2.setCenter(toAdd3);
+			
+			popUp.setCenter(toAdd2);
+			
+			BorderPane bottom = new BorderPane();
+			bottom.setPrefHeight(50);
+			Button buttonCreateFilter = newButton("Load", 200, 20);
+			buttonCreateFilter.setOnMouseReleased(e -> mealStage.close());
+			buttonCreateFilter.setAlignment(Pos.BASELINE_CENTER);
+			bottom.setCenter(buttonCreateFilter);
+			popUp.setBottom(bottom);
+			
+			Scene scene = new Scene(popUp, 400, 300, Color.rgb(255, 239, 229));
+			mealStage.setScene(scene);
+			mealStage.show();
+			
+		}
+		
+		
+		private void foodNameFilterPopUp() {
+			Stage mealStage = new Stage();
+			mealStage.setTitle("Create New Name Based Filter");
+			
+			BorderPane popUp = new BorderPane();
+			popUp.setPrefSize(300,600);
+			popUp.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(15,15,15,15))));
+			
+			Text t4 = newHeaderText("ADD FOOD NAME FILTER", 30, 105, 10, 21);
+			t4.setTextAlignment(TextAlignment.CENTER);
+			t4.setCache(true);
+			
+			BorderPane toAdd = new BorderPane();
+			toAdd.setPrefHeight(50);
+			toAdd.setCenter(t4);
+			popUp.setTop(toAdd);
+			
+			BorderPane toAdd2 = new BorderPane();
+			
+			HBox toAdd3 = addHBox();
+			Label enterNumber = new Label("Value to filter on: ");
+			TextField enterNumberField = new TextField();
+			enterNumberField.setTooltip(new Tooltip("Enter text"));
+			enterNumberField.setPromptText("Ex: apple");
+			toAdd3.getChildren().addAll(enterNumber,enterNumberField);
+			toAdd2.setCenter(toAdd3);
+			
+			popUp.setCenter(toAdd2);
+			
+			BorderPane bottom = new BorderPane();
+			bottom.setPrefHeight(50);
+			Button buttonCreateFilter = newButton("Create & Apply", 200, 20);
+			buttonCreateFilter.setOnMouseReleased(e -> mealStage.close());
+			buttonCreateFilter.setAlignment(Pos.BASELINE_CENTER);
+			bottom.setCenter(buttonCreateFilter);
+			popUp.setBottom(bottom);
+			
+			Scene scene = new Scene(popUp, 400, 300, Color.rgb(255, 239, 229));
+			mealStage.setScene(scene);
+			mealStage.show();
+			
+		}
+		
+		private void nutritionalFilterPopUp() {
+			Stage mealStage = new Stage();
+			mealStage.setTitle("Create New Nutritional Filter");
+			
+			BorderPane popUp = new BorderPane();
+			popUp.setPrefSize(300,600);
+			popUp.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(15,15,15,15))));
+			
+			Text t4 = newHeaderText("ADD NUTRITIONAL FILTER", 30, 105, 10, 21);
+			t4.setTextAlignment(TextAlignment.CENTER);
+			t4.setCache(true);
+			
+			BorderPane toAdd = new BorderPane();
+			toAdd.setPrefHeight(50);
+			toAdd.setCenter(t4);
+			popUp.setTop(toAdd);
+			
+			BorderPane toAdd2 = new BorderPane();
+			
+			HBox toAdd3 = addHBox();
+			final ToggleGroup group1 = new ToggleGroup();
 
-            rightPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+			RadioButton rb1 = new RadioButton("Fat");
+			rb1.setToggleGroup(group1);
+			rb1.setSelected(true);
+			RadioButton rb2 = new RadioButton("Carb");
+			rb2.setToggleGroup(group1);
+			RadioButton rb3 = new RadioButton("Fiber");
+			rb3.setToggleGroup(group1);
+			RadioButton rb4 = new RadioButton("Calories");
+			rb4.setToggleGroup(group1);
+			RadioButton rb5 = new RadioButton("Protein");
+			rb5.setToggleGroup(group1);
+			
+			toAdd3.getChildren().addAll(rb1,rb2,rb3,rb4,rb5);
+			toAdd2.setTop(toAdd3);
+			
+			BorderPane neater = new BorderPane();
+			HBox toAdd4 = addHBox();
+			final ToggleGroup group2 = new ToggleGroup();
 
-            rightPane.fitToHeightProperty();
-            return rightPane;
+			RadioButton rb6 = new RadioButton("Greater than or equal to");
+			rb6.setToggleGroup(group2);
+			rb6.setSelected(true);
+			RadioButton rb7 = new RadioButton("Equals");
+			rb7.setToggleGroup(group2);
+			RadioButton rb8 = new RadioButton("Less than or equal to");
+			rb8.setToggleGroup(group2);
+			toAdd4.getChildren().addAll(rb8,rb7,rb6);
+			neater.setTop(toAdd4);
+			
+			HBox toAdd5 = addHBox();
+			Label enterNumber = new Label("Value to filter on: ");
+			TextField enterNumberField = new TextField();
+			enterNumberField.setTooltip(new Tooltip("Enter number with decminal place"));
+			enterNumberField.setPromptText("Ex: ##.##");
+			toAdd5.getChildren().addAll(enterNumber,enterNumberField);
+			neater.setCenter(toAdd5);
+			toAdd2.setCenter(neater);
+			
+			popUp.setCenter(toAdd2);
+			
+			
+			BorderPane bottom = new BorderPane();
+			bottom.setPrefHeight(50);
+			Button buttonCreateFilter = newButton("Create & Apply", 200, 20);
+			buttonCreateFilter.setOnMouseReleased(e -> mealStage.close());
+			buttonCreateFilter.setAlignment(Pos.BASELINE_CENTER);
+			bottom.setCenter(buttonCreateFilter);
+			popUp.setBottom(bottom);
+			
+			Scene scene = new Scene(popUp, 400, 300, Color.rgb(255, 239, 229));
+			mealStage.setScene(scene);
+			mealStage.show();
+		}
+		
+		private void newFoodItemPopUp() {
+			BorderPane screen = new BorderPane();
+			Stage popup = new Stage();
+			popup.setTitle("Add New Food");
+			Text t4 = newHeaderText("ADD NEW FOOD", 30, 105, 10, 21);
+			t4.setTextAlignment(TextAlignment.CENTER);
+			
+			BorderPane top = new BorderPane();
+			top.setCenter(t4);
+			top.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(0))));
+						
+			
+			GridPane grid = new GridPane();
+			grid.setAlignment(Pos.CENTER);
+			grid.setHgap(10);
+			grid.setVgap(10);
+			grid.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(0))));
+			
+			Label foodName = new Label("Food Name: ");
+			grid.add(foodName, 0, 1);
+			TextField nameField = new TextField();
+			nameField.setPromptText("Enter Food Name");
+			grid.add(nameField, 1, 1);
+						
+			Label calories = new Label("Calories: ");
+			grid.add(calories, 0, 2);
+			TextField calorieField = new TextField();
+			calorieField.setTooltip(new Tooltip("Enter Calorie Count"));
+			calorieField.setPromptText("Enter Calorie Count");
+			grid.add(calorieField, 1, 2);
+			
+			Label fat = new Label("Fat: ");
+			grid.add(fat, 0, 3);
+			TextField fatField = new TextField();
+			fatField.setTooltip(new Tooltip("Enter Fat Content"));
+			fatField.setPromptText("Enter Fat content");
+			grid.add(fatField, 1, 3);
+			
+			Label carbohydrate = new Label("Carbohydrates: ");
+			grid.add(carbohydrate, 0, 4);
+			TextField carbohydrateField = new TextField();
+			carbohydrateField.setTooltip(new Tooltip("Enter Carbohydrates"));
+			carbohydrateField.setPromptText("Enter Carbohydrates");
+			grid.add(carbohydrateField, 1, 4);
+			
+			
+			Label fiber = new Label("Fiber: ");
+			grid.add(fiber, 0, 5);
+			TextField fiberField = new TextField();
+			fiberField.setTooltip(new Tooltip("Enter Fiber"));
+			fiberField.setPromptText("Enter Fiber");
+			grid.add(fiberField, 1, 5);
+			
+			Label protein = new Label("Protein: ");
+			grid.add(protein, 0, 6);
+			TextField proteinField = new TextField();
+			proteinField.setTooltip(new Tooltip("Enter Protein"));
+			proteinField.setPromptText("Enter Protein");
+			grid.add(proteinField, 1, 6);
+			
+			Button saveBtn = new Button();
+			saveBtn.setText("Save");
+			saveBtn.alignmentProperty().set(Pos.CENTER_LEFT);
+			saveBtn.setOnMouseReleased(e -> popup.close());
+			
+			Button cancelBtn = new Button();
+			cancelBtn.setText("Cancel");
+			cancelBtn.alignmentProperty().set(Pos.BASELINE_RIGHT);	
+			cancelBtn.setOnMouseReleased(e -> popup.close());
+			
+			HBox bottomButtons = addHBox();
+			bottomButtons.getChildren().addAll(saveBtn,cancelBtn);
+			bottomButtons.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(0))));
+			bottomButtons.alignmentProperty().set(Pos.CENTER);
+			
+			screen.setTop(top);
+			screen.setCenter(grid);
+			screen.setBottom(bottomButtons);
+
+			Scene popupAddFood = new Scene(screen, 300, 350);
+			popup.setScene(popupAddFood);
+			popup.show();
 		}
 		
 		private Button newButton(String text, int width, int height) {
@@ -419,18 +643,6 @@ public class Final extends Application {
 		// http://paletton.com/palette.php?uid=50f0h0kllll2LnubDmuuCkhSJjb
 		// purple/maroon 158, 53, 74
 		//brownish 170, 126, 57
-
-		
-//		// ListView
-//		primaryStage.setTitle("ListView");
-//		StackPane sPane = new StackPane();
-//		Scene scene = new Scene(sPane, 1600, 900, Color.DARKGRAY);
-//		
-//		ListView<String> nameList = new ListView<>();
-//		nameList.setItems(names);
-//		sPane.getChildren().add(nameList);
-//		primaryStage.setScene(scene);
-//		primaryStage.show();
 		
 	
 	public static void main(String[] args) {
