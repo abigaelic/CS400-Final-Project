@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * This class represents a food item with all its properties.
  * 
- * @author aka, Kelly East
+ * @author Amanda Weppler Ansel
  */
 public class FoodItem {
     // The name of the food item.
@@ -23,7 +23,39 @@ public class FoodItem {
      * @param id unique id of the food item 
      */
     public FoodItem(String id, String name) {
-        // TODO : Complete
+        this.id = id;
+        this.name = name;
+        
+        HashMap<String, Double> nutrients = new HashMap<String, Double>();
+        this.nutrients = nutrients;
+    }
+    
+    /**
+     * Constructor
+     * @param name name of the food item
+     */
+    
+    public FoodItem(String name) {
+    	this.name = name;
+    	String id = new String();
+    	this.id = id;
+    	
+    	HashMap<String, Double> nutrients = new HashMap<String, Double>();
+        this.nutrients = nutrients;
+    }
+    
+    /**
+     * Default constructor
+     */
+    
+    public FoodItem() {
+    	String name = new String();
+    	this.name = name;
+    	String id = new String();
+    	this.id = id;
+    	
+    	HashMap<String, Double> nutrients = new HashMap<String, Double>();
+        this.nutrients = nutrients;
     }
     
     /**
@@ -34,6 +66,15 @@ public class FoodItem {
     public String getName() {
         return name;
     }
+    
+    /**
+     * Sets name for FoodItem object
+     * @param newName
+     */
+    
+    public void setName(String newName) {
+    	name = newName;
+    }
 
     /**
      * Gets the unique id of the food item
@@ -41,8 +82,12 @@ public class FoodItem {
      * @return id of the food item
      */
     public String getID() {
-        // TODO : Complete
-        return null;
+        
+        return id;
+    }
+    
+    public void setID(String newId) {
+    	id = newId;
     }
     
     /**
@@ -51,8 +96,8 @@ public class FoodItem {
      * @return nutrients of the food item
      */
     public HashMap<String, Double> getNutrients() {
-        // TODO : Complete
-        return null;
+        
+        return nutrients;
     }
 
     /**
@@ -60,7 +105,20 @@ public class FoodItem {
      * If nutrient already exists, updates its value.
      */
     public void addNutrient(String name, double value) {
-        // TODO : Complete
+        
+    	if (name != null) { // if nutrient name is not null
+    		
+    		if (nutrients.containsKey(name)) { // if nutrient already present and mapped, update value
+    			nutrients.replace(name, value);
+    			System.out.println("nutrient values updated. Value = " + nutrients.get(name));
+    		}
+    		
+    		else {  // add new nutrient and value
+    			nutrients.put(name, value);
+    			System.out.println("nutrient values added. Value = " + nutrients.get(name));
+    		}
+
+    	}
     }
 
     /**
@@ -68,8 +126,35 @@ public class FoodItem {
      * If not present, then returns 0.
      */
     public double getNutrientValue(String name) {
-        // TODO : Complete
-        return 0;
+    	
+    	if (nutrients.containsKey(name)) { // if nutrient is present
+    		return nutrients.get(name); // return nutrient value
+    		
+    	}
+    	else {
+    		return 0;   // return 0 if not present in map
+    	}
+    	
+    	
+    	
+    	
     }
     
+    public static void main(String [] args){
+    	FoodItem chocolate = new FoodItem("one","chocolate");
+    	
+    	//chocolate.addNutrient("fat", 4.5);
+    	//System.out.println(chocolate.getNutrients().toString());
+    	
+    	//System.out.println(chocolate.getNutrientValue("fat"));
+    	
+    	FoodItem testOrange = new FoodItem();
+    	testOrange.setName("orange");
+    	
+    	System.out.println(testOrange.getName());
+    	
+    	chocolate.setID(chocolate.toString());
+    	System.out.println(chocolate.getID());
+    }
 }
+
