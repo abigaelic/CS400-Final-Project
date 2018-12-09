@@ -207,14 +207,14 @@ public class FoodData implements FoodDataADT<FoodItem> {
         }
         
         }
-        if (nameFilter.size() == 0) {
+        /*if (nameFilter.size() == 0) {
         	//System.out.println("No foods found");
         	return foodItemList;
         }
-        else {
+        else { */
         //System.out.println("Item 1 is " + nameFilter.get(0).getName());
         return nameFilter;
-        }
+        //}
     }
 
     /**
