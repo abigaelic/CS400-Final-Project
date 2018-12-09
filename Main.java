@@ -947,7 +947,7 @@ public class Main extends Application {
 			String carbohydrateInput = carbohydrateField.getText();
 			String fatInput = fatField.getText();
 			String caloriesInput = calorieField.getText();
-			String nameInput = nameField.getText().toLowerCase();
+			String nameInput = nameField.getText();
 			String IDinput = IDField.getText();
 			System.out.println(doubleValidation(fiberInput));
 			if (((doubleValidation(fiberInput) == true) && (fiberInput != null)) &&
