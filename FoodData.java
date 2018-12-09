@@ -240,6 +240,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) { 
+    	// handle an empty food list
+    	if (foodItemList.size() == 0) {
+    		return null;
+    	}
+    	
     	// master food list
     	ArrayList<FoodItem> masterFoodList = new ArrayList<FoodItem>();
     	
@@ -251,16 +256,26 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	
     	// start looping through list
     	for (int i = 0; i < rules.size(); i ++) {
+    		
     		// parse this rule
     		String ruleForEval = rules.get(i);
     		String[] filterElements = ruleForEval.split(delims);
     		
-    		// break out the filter elements
+    		// handle name filter
+    		if (filterElements[0].equals("Name")) {
+    			if (filterElements.length > 3) {
+    				return null;
+    			}
+    			String nameFilter = filterElements[2];
+    			filteredFoodLists.add((ArrayList<FoodItem>) filterByName(nameFilter));
+    		}
+    		
+    		// break out the nutrition filter elements
     		String nutrient = filterElements[0].toLowerCase();
     		String comparator = filterElements[1];
     		double key = Double.parseDouble(filterElements[2]);
     		
-    		// create the filter
+    		// create the nutrition filter
     		BPTree<Double, FoodItem> tree = indexes.get(nutrient);
     		ArrayList<FoodItem> filteredFoods = (ArrayList<FoodItem>) tree.rangeSearch(key, comparator);
     		filteredFoodLists.add(filteredFoods);
