@@ -69,7 +69,7 @@ import javafx.scene.text.TextAlignment;
 
 
 public class Main extends Application {
-
+	protected static final FoodData foodData = new FoodData();
 	static ObservableList<String> foodList = FXCollections.observableArrayList();
 	static ObservableList<String> mealList = FXCollections.observableArrayList();
 	static ObservableList<String> appliedFilterList = FXCollections.observableArrayList();
@@ -963,7 +963,8 @@ public class Main extends Application {
 				newFood.addNutrient(nameInput, Double.valueOf(carbohydrateInput));
 				newFood.addNutrient(nameInput, Double.valueOf(fatInput));
 				newFood.addNutrient(nameInput, Double.valueOf(caloriesInput));
-			
+				foodData.addFoodItem(newFood);
+				
 				saveBtn.setOnMouseReleased(q -> popup.close());
 			}
 			else {
