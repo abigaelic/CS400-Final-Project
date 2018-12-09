@@ -504,21 +504,21 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         @SuppressWarnings("unchecked")
 		void insert(K key, V value) {
             // TODO : Complete
-        	System.out.println("Adding key : " + key);
+        	//System.out.println("Adding key : " + key);
         	
         	//start at the farthest right index
         	int i = keys.size() - 1;
-        	System.out.println("Evaluating node " + this);
-        	System.out.println("Keys.size for key " + key + " is " + i);
-        	System.out.println("Children.size for key " + key + " is " + children.size());
-        	System.out.println("Children for node " + this + " is " + this.children);
+        	//System.out.println("Evaluating node " + this);
+        	//System.out.println("Keys.size for key " + key + " is " + i);
+        	//System.out.println("Children.size for key " + key + " is " + children.size());
+        	//System.out.println("Children for node " + this + " is " + this.children);
         	boolean found = false;
         	int foundIndex = 0;
         	
         	// Find the child which is going to have the new key 
         	// if the first key of the child is greater that key to add, move down the list
-        	System.out.println("Key for evaluation is " + key);
-        	System.out.println("i = " + i);
+        	//System.out.println("Key for evaluation is " + key);
+        	//System.out.println("i = " + i);
             while (i >= 0 && !found) {
             	//handle root
             	K largestRootKey = this.keys.get(this.keys.size() - 1);
@@ -531,7 +531,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             		System.out.println("Child for comparison is " + this.children.get(j).getFirstLeafKey());
             		if (this.children.get(j).getFirstLeafKey().compareTo(key) <= 0) {
             			found = true;
-            			System.out.println("Found index = " + j);
+            			//System.out.println("Found index = " + j);
             			foundIndex = j;
             		}
             	}
@@ -542,7 +542,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             }
             
             Node foundChild = this.children.get(foundIndex);
-            System.out.println("Found child = " + foundChild);
+            //System.out.println("Found child = " + foundChild);
             
             /*
             if (foundChild.getType().equals("LeafNode")) {
@@ -1067,6 +1067,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
         
+        /*
         bpTree.insert(0.2,0.0);
         bpTree.insert(0.8,0.0);
         bpTree.insert(0.0,0.0);
@@ -1092,7 +1093,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         System.out.println(bpTree);
         bpTree.insert(0.5,0.0);
         System.out.println(bpTree);
-        
+        */
         /*
         bpTree.insert(0.2, 10.0);
         //System.out.println(bpTree);
