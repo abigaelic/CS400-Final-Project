@@ -66,15 +66,6 @@ public class FoodItem {
     public String getName() {
         return name;
     }
-    
-    /**
-     * Sets name for FoodItem object
-     * @param newName
-     */
-    
-    public void setName(String newName) {
-    	name = newName;
-    }
 
     /**
      * Gets the unique id of the food item
@@ -84,10 +75,6 @@ public class FoodItem {
     public String getID() {
         
         return id;
-    }
-    
-    public void setID(String newId) {
-    	id = newId;
     }
     
     /**
@@ -149,12 +136,12 @@ public class FoodItem {
     	//System.out.println(chocolate.getNutrientValue("fat"));
     	
     	FoodItem testOrange = new FoodItem();
-    	testOrange.setName("orange");
     	
-    	System.out.println(testOrange.getName());
     	
-    	chocolate.setID(chocolate.toString());
-    	System.out.println(chocolate.getID());
+    	//System.out.println(testOrange.getName());
+    	
+    	
+    	//System.out.println(chocolate.getID());
     }
 }
 
