@@ -855,7 +855,7 @@ public class Main extends Application {
 	 * where an end-user can enter a info to
 	 * filter the names on
 	 */
-	private void newFoodItemPopUp() {
+		private void newFoodItemPopUp() {
 		BorderPane screen = new BorderPane();
 		Stage popup = new Stage();
 		popup.setTitle("Add New Food");
@@ -876,18 +876,17 @@ public class Main extends Application {
 		grid.setVgap(10);
 		grid.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(0))));
 
+		Label foodID = new Label("ID: ");
+		grid.add(foodID, 0, 1);
+		TextField IDField = new TextField();
+		IDField.setPromptText("Enter an alphanumeric ID");
+		grid.add(IDField, 1, 1);
+		
 		Label foodName = new Label("Food Name: ");
-		grid.add(foodName, 0, 1);
+		grid.add(foodName, 0, 2);
 		TextField nameField = new TextField();
 		nameField.setPromptText("Enter Food Name");
-		grid.add(nameField, 1, 1);
-
-		Label calories = new Label("Calories: ");
-		grid.add(calories, 0, 2);
-		TextField calorieField = new TextField();
-		calorieField.setTooltip(new Tooltip("Enter Calorie Count"));
-		calorieField.setPromptText("Enter Calorie Count");
-		grid.add(calorieField, 1, 2);
+		grid.add(nameField, 1, 2);
 
 		Label fat = new Label("Fat: ");
 		grid.add(fat, 0, 3);
@@ -917,11 +916,17 @@ public class Main extends Application {
 		proteinField.setTooltip(new Tooltip("Enter Protein"));
 		proteinField.setPromptText("Enter Protein");
 		grid.add(proteinField, 1, 6);
+		
+		Label calories = new Label("Calories: ");
+		grid.add(calories, 0, 7);
+		TextField calorieField = new TextField();
+		calorieField.setTooltip(new Tooltip("Enter Calorie Count"));
+		calorieField.setPromptText("Enter Calorie Count");
+		grid.add(calorieField, 1, 7);
 
 		Button saveBtn = new Button();
 		saveBtn.setText("Save");
 		saveBtn.alignmentProperty().set(Pos.CENTER_LEFT);
-		saveBtn.setOnMouseReleased(e -> popup.close());
 
 		Button cancelBtn = new Button();
 		cancelBtn.setText("Cancel");
@@ -934,7 +939,40 @@ public class Main extends Application {
 		bottomButtons.alignmentProperty().set(Pos.CENTER);
 
 		// Mary Alice to add save things
-
+		
+		
+		//saveBtn.set;
+		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+			String fiberInput = fiberField.getText();
+			String proteinInput = proteinField.getText();
+			String carbohydrateInput = carbohydrateField.getText();
+			String fatInput = fatField.getText();
+			String caloriesInput = calorieField.getText();
+			String nameInput = nameField.getText();
+			String IDinput = IDField.getText();
+			System.out.println(doubleValidation(fiberInput));
+			if (((doubleValidation(fiberInput) == true) && (fiberInput != null)) &&
+			((doubleValidation(proteinInput) == true) && (proteinInput != null)) &&
+			((doubleValidation(carbohydrateInput) == true) && (carbohydrateInput != null)) &&
+			((doubleValidation(fatInput) == true) && (fatInput != null)) &&
+			((doubleValidation(caloriesInput) == true) && (caloriesInput != null)) && 
+			(nameInput != null) && (IDinput != null))
+			{
+				FoodItem newFood = new FoodItem(IDinput, nameInput);
+				newFood.addNutrient(nameInput, Double.valueOf(fiberInput));
+				newFood.addNutrient(nameInput, Double.valueOf(proteinInput));
+				newFood.addNutrient(nameInput, Double.valueOf(carbohydrateInput));
+				newFood.addNutrient(nameInput, Double.valueOf(fatInput));
+				newFood.addNutrient(nameInput, Double.valueOf(caloriesInput));
+			
+				saveBtn.setOnMouseReleased(q -> popup.close());
+			}
+			else {
+				errorPopup("Error: Please fill out all the fields. Values need to be in a double format." + System.lineSeparator() 
+				+ System.lineSeparator() + "ie:  1.0 or 22.35 or ##.## or ##");
+			
+		}}});
 		screen.setTop(top);
 		screen.setCenter(grid);
 		screen.setBottom(bottomButtons);
