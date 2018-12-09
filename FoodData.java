@@ -170,14 +170,69 @@ public class FoodData implements FoodDataADT<FoodItem> {
         return nameFilter;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
+    /**
+     * Gets all the food items that fulfill ALL the provided rules
+     *
+     * Format of a rule:
+     *     "<nutrient> <comparator> <value>"
+     * 
+     * Definition of a rule:
+     *     A rule is a string which has three parts separated by a space:
+     *         1. <nutrient>: Name of one of the 5 nutrients [CASE-INSENSITIVE]
+     *         2. <comparator>: One of the following comparison operators: <=, >=, ==
+     *         3. <value>: a double value
+     * 
+     * Note:
+     *     1. Multiple rules can contain the same nutrient.
+     *         E.g. ["calories >= 50.0", "calories <= 200.0", "fiber == 2.5"]
+     *     2. A FoodItemADT object MUST satisfy ALL the provided rules i
+     *        to be returned in the filtered list.
+     *
+     * @param rules list of rules
+     * @return list of filtered food items; if no food item matched, return empty list
      */
     @Override
-    public List<FoodItem> filterByNutrients(List<String> rules) { // Kelly
-    	// TODO : Complete
-        return null;
+    public List<FoodItem> filterByNutrients(List<String> rules) { 
+    	// master food list
+    	ArrayList<FoodItem> masterFoodList = new ArrayList<FoodItem>();
+    	
+    	// list of filteredFoodLists
+    	ArrayList<ArrayList<FoodItem>> filteredFoodLists = new ArrayList<ArrayList<FoodItem>>();
+    	
+    	// setup delimiter
+    	String delims = "[ ]";
+    	
+    	// start looping through list
+    	for (int i = 0; i < rules.size(); i ++) {
+    		// parse this rule
+    		String ruleForEval = rules.get(i);
+    		String[] filterElements = ruleForEval.split(delims);
+    		
+    		// break out the filter elements
+    		String nutrient = filterElements[0].toLowerCase();
+    		String comparator = filterElements[1];
+    		double key = Double.parseDouble(filterElements[2]);
+    		
+    		// create the filter
+    		BPTree<Double, FoodItem> tree = indexes.get(nutrient);
+    		ArrayList<FoodItem> filteredFoods = (ArrayList<FoodItem>) tree.rangeSearch(key, comparator);
+    		filteredFoodLists.add(filteredFoods);
+    	}
+    	
+    	for (FoodItem i : filteredFoodLists.get(0)) {
+    		boolean quit = false;
+    		for (int j = 1; j < filteredFoodLists.size() && !quit; j++) {
+    			if (!filteredFoodLists.get(j).contains(i)) {
+    				quit = true;
+    			}
+    		}
+    		
+    		if (!quit) {
+    			masterFoodList.add(i);
+    		}
+    	}
+    	
+        return masterFoodList;
     }
 
     /**
