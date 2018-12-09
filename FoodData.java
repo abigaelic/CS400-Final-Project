@@ -28,6 +28,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
     private BPTree<Double, FoodItem> fiberTree;
     private BPTree<Double, FoodItem> proteinTree;
     
+    
+    
+    
+    
     /**
      * Public constructor
      */
@@ -37,6 +41,23 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	
     	HashMap<String, BPTree <Double, FoodItem>> indexes = new HashMap<String, BPTree <Double, FoodItem>>();
     	this.indexes = indexes;
+    	
+    	BPTree<Double, FoodItem> caloriesTree = new BPTree<Double, FoodItem>(3);
+    	this.caloriesTree = caloriesTree;
+        BPTree<Double, FoodItem> fatTree = new BPTree<Double, FoodItem>(3);
+        this.fatTree = fatTree;
+        BPTree<Double, FoodItem> carbohydratesTree = new BPTree<Double, FoodItem>(3);
+        this.carbohydratesTree = carbohydratesTree;
+        BPTree<Double, FoodItem> fiberTree = new BPTree<Double, FoodItem>(3);
+        this.fiberTree = fiberTree;
+        BPTree<Double, FoodItem> proteinTree = new BPTree<Double, FoodItem>(3);
+        this.proteinTree = proteinTree;
+        
+        indexes.put("calories", caloriesTree);
+        indexes.put("fat", fatTree);
+        indexes.put("carbohydrates", carbohydratesTree);
+        indexes.put("fiber", fiberTree);
+        indexes.put("protein", proteinTree);
     }
     
     
@@ -120,6 +141,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
 						continue;
 					} // END inner CATCH block
 					
+				// check for duplicate names
+					
+					for (int n = 0; n < foodItemList.size(); ++n) {
+						if (foodItemList.get(n).getName().equals(name) && 
+								!foodItemList.get(n).getID().equals(id)) {
+							name = name + "*";
+						}
+					}
+					
+					
 					
 						FoodItem foodItem = new FoodItem(id, name);		// create new food item 
 						System.out.println("Food item " + name + " created");
@@ -132,11 +163,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
 						
 						foodItemList.add(foodItem);  // add new Item to list
 						
+			//TODO: figure out how to add item to BPTree -- test that this works
+						
 						caloriesTree.insert(calorieCount, foodItem);
 						fatTree.insert(fatGrams, foodItem);
 						carbohydratesTree.insert(carbGrams, foodItem);
 						fiberTree.insert(fiberGrams, foodItem);
 						proteinTree.insert(proteinGrams, foodItem);
+						
+						
+
 					
 			} // END while loop
 			} // END if statement
@@ -173,12 +209,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
         }
         if (nameFilter.size() == 0) {
         	//System.out.println("No foods found");
-		return foodItemList;
+        	return foodItemList;
         }
-	else {    
+        else {
         //System.out.println("Item 1 is " + nameFilter.get(0).getName());
         return nameFilter;
-	}
+        }
     }
 
     /**
@@ -246,18 +282,22 @@ public class FoodData implements FoodDataADT<FoodItem> {
         return masterFoodList;
     }
 
+
     /**
      * Adds provided food item to foodItemList
      */
     @Override
     public void addFoodItem(FoodItem foodItem) { //me
-        foodItemList.add(foodItem);
-	
-	caloriesTree.insert(foodItem.getNutrientValue("calories"), foodItem);
-	fatTree.insert(foodItem.getNutrientValue("fat"), foodItem);
-	carbohydratesTree.insert(foodItem.getNutrientValue("carbohydrates"), foodItem);
-	fiberTree.insert(foodItem.getNutrientValue("fiber"), foodItem);
-	proteinTree.insert(foodItem.getNutrientValue("protein"), foodItem);
+ 
+    	
+    	foodItemList.add(foodItem);
+        
+        caloriesTree.insert(foodItem.getNutrientValue("calories"), foodItem);
+		fatTree.insert(foodItem.getNutrientValue("fat"), foodItem);
+		carbohydratesTree.insert(foodItem.getNutrientValue("carbohydrates"), foodItem);
+		fiberTree.insert(foodItem.getNutrientValue("fiber"), foodItem);
+		proteinTree.insert(foodItem.getNutrientValue("protein"), foodItem);
+        
     }
 
     /**
@@ -270,7 +310,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	return foodItemList;
     }
     
-   
+ 
 
     /**
      * Save the list of food items in ascending order by name
@@ -316,27 +356,43 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 public static void main(String [] args){
 	     FoodData test = new FoodData();
 		 
-		 test.loadFoodItems("test.csv"); 
+		 test.loadFoodItems("writetest.ddd"); 
+		 
+		/*System.out.println("calories tree: " + test.caloriesTree);
+		System.out.println(" carbs tree: " + test.carbohydratesTree);
+		System.out.println("fat tree: " + test.fatTree);
+		System.out.println("protein tree: " + test.proteinTree);
+		System.out.println("fiber tree: " + test.fiberTree); */
+		 
+		
+		 
+		 for (int p = 0; p < test.foodItemList.size(); ++p ) {
+			 System.out.println(test.foodItemList.get(p).getName());
+		 }
+		 
+		
+		 
 	     //System.out.println(test.foodItemList.get(0).getName());
 	     //System.out.println(test.foodItemList.get(1).getName());
 		 //test.filterByName(null);
 		 
 		// System.out.println("testing getAllFoodITems " + test.getAllFoodItems().get(0).getName());
 		 
-		 FoodItem chocolate = new FoodItem("chocolate");
-		 test.addFoodItem(chocolate);
+		 //FoodItem chocolate = new FoodItem("chocolate");
+		 //test.addFoodItem(chocolate);
 		 
-		 System.out.println("testing add " + test.getAllFoodItems().get(2).getName());
+		// System.out.println("testing add " + test.getAllFoodItems().get(2).getName());
 		 
 		 //test.getAllFoodItems().get(1)
 		 
-		 System.out.println(test.filterByName("soy").get(0).getName());
+		 //System.out.println(test.filterByName("aaa").get(0).getName());
 		 
 		 
 		 
-		 System.out.println(test.getFoodNames(test.getAllFoodItems()) + "get food test");
+		 //System.out.println(test.getFoodNames(test.getAllFoodItems()) + "get food test");
 		 
 		// test.saveFoodItems("writetest.ddd");
 	    }
+	 
+	    
 }
-
