@@ -1,4 +1,5 @@
-* Filename:   Main.java
+/**
+ * Filename:   Main.java
  * Project:    Team Project, Milestone2, Java FX GUI interface at start
  * Authors:    Abby Fry, CS400 @ Epic
  *
@@ -13,10 +14,11 @@
  * Bugs:      no known bugs
  */
 package application;
-import java.util.ArrayList;
-import java.util.List;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Observable;
 import java.util.Scanner;
@@ -33,6 +35,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
@@ -69,6 +72,7 @@ import javafx.scene.text.TextAlignment;
 
 
 public class Main extends Application {
+
 	protected static final FoodData foodData = new FoodData();
 	static ObservableList<String> foodList = FXCollections.observableArrayList();
 	static ObservableList<String> mealList = FXCollections.observableArrayList();
@@ -77,6 +81,7 @@ public class Main extends Application {
 	static ObservableList<String> allFilterList = FXCollections.observableArrayList();
 
 	String selectedMealItem = null;
+	String stringFilter = null;
 
 	/**This method launches the main window and 
 	 * calls other methods which launch sections of 
@@ -92,6 +97,9 @@ public class Main extends Application {
 		BorderPane bPane = new BorderPane();
 		bPane.setPrefSize(2000, 1000);
 
+		//testing
+		doubleValidation("test");
+		
 		//TOP
 		BorderPane top = new BorderPane();
 		top.setPrefSize(2000,150);
@@ -115,7 +123,7 @@ public class Main extends Application {
 		bPane.setCenter(setLeft()); //set up Food List section
 
 		Scene mainScene = new Scene(bPane, 1600, 900, Color.rgb(158, 53, 74));
-
+		
 		primaryStage.setScene(mainScene);
 		primaryStage.show();   
 
@@ -172,6 +180,9 @@ public class Main extends Application {
 		//number of food items label
 		Label foodNumber = new Label();
 		foodNumber.setText(foodList.size() + " food(s)");
+		if (foodList.isEmpty()) {
+			foodNumber.setText(0 + " food(s)");
+		}
 		foodNumber.setAlignment(Pos.CENTER_LEFT);
 		foodNumber.setTextFill(Color.rgb(255, 226, 206));
 		BorderPane bottomRight = new BorderPane();
@@ -372,6 +383,7 @@ public class Main extends Application {
 					allFilterList.remove(filterToDelete);
 					unappliedFilterList.remove(filterToDelete);
 					appliedFilterList.remove(filterToDelete);
+					getFoodNames(foodData.filterByNutrients(appliedFilterList)); 
 					filterToDelete = null;
 				}
 			}
@@ -527,6 +539,7 @@ public class Main extends Application {
 		buttonAcceptApply.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
 				// call apply filters
+				getFoodNames(foodData.filterByNutrients(appliedFilterList));
 				
 				filterStage.close();
 			}
@@ -584,6 +597,8 @@ public class Main extends Application {
 		buttonLOAD.setAlignment(Pos.BASELINE_CENTER);
 		bottom.setCenter(buttonLOAD);
 		
+
+		
 		buttonLOAD.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
 				String filepath = null;
@@ -592,12 +607,15 @@ public class Main extends Application {
 				
 				if (filepath != null) {
 					// call load from file
+					foodData.loadFoodItems(filepath);
+					foodList.clear();
+					getFoodNames(foodData.getAllFoodItems());
 				}
 				
 				fileStage.close();
 			}
+			
 		});
-		
 		popUp.setBottom(bottom);
 		// END create and assign actions to buttons
 
@@ -657,6 +675,8 @@ public class Main extends Application {
 				
 				if (filepath != null) {
 					// call save to file
+					foodData.saveFoodItems(filepath);
+
 				}
 				
 				fileStage.close();
@@ -717,15 +737,23 @@ public class Main extends Application {
 		
 		buttonCreateFilter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
-				String stringFilter = null;
-				
-				stringFilter  = enterStringField.getText();
-				
-				if (stringFilter != null) {
-					// call create name filter
+				if (enterStringField.getText().isEmpty()) {
+					mealStage.close();
+				} else {
+					if (stringFilter != null) {
+						appliedFilterList.remove("Name Filter: " + stringFilter);
+						unappliedFilterList.remove("Name Filter: " + stringFilter);
+						allFilterList.remove("Name Filter: " + stringFilter);
+					}
+					
+					stringFilter  = enterStringField.getText();
+					appliedFilterList.add("Name Filter: " + stringFilter);
+					allFilterList.add("Name Filter: " + stringFilter);
+					
+					getFoodNames(foodData.filterByNutrients(appliedFilterList));  // updates food list
+					
+					mealStage.close();
 				}
-				
-				mealStage.close();
 			}
 		});
 		//END Create buttons and assign actions 
@@ -734,7 +762,7 @@ public class Main extends Application {
 		mealStage.setScene(scene);
 		mealStage.show();
 
-	}
+	}//name filter
 
 	/**This helper method builds the Create
 	 * New Nutritional Based Filter Pop-Up
@@ -814,7 +842,6 @@ public class Main extends Application {
 		BorderPane bottom = new BorderPane();
 		bottom.setPrefHeight(50);
 		Button buttonCreateFilter = newButton("Create & Apply", 200, 20);
-		buttonCreateFilter.setOnMouseReleased(e -> mealStage.close());
 		buttonCreateFilter.setAlignment(Pos.BASELINE_CENTER);
 		bottom.setCenter(buttonCreateFilter);
 		popUp.setBottom(bottom);
@@ -823,26 +850,56 @@ public class Main extends Application {
 			@Override public void handle(ActionEvent e) {
 				String nutritionalGroupFilter = null;
 				String operatorFilter = null;
-				String nutritionalFilter = "0.0";
+				String nutritionalFilter = null;
+				boolean formatCheck = true;
 				
-				if (group2.getSelectedToggle() == rb6) {operatorFilter = ">=";} if (group2.getSelectedToggle() == rb7) {operatorFilter = "=";}
+				if (group2.getSelectedToggle() == rb6) {operatorFilter = ">=";} if (group2.getSelectedToggle() == rb7) {operatorFilter = "==";}
 					if (group2.getSelectedToggle() == rb8) {operatorFilter = "<=";}	
 				
-				if (group1.getSelectedToggle() == rb1) {nutritionalGroupFilter = "fat";}  if (group1.getSelectedToggle() == rb2) {nutritionalGroupFilter = "carb";}
+				if (group1.getSelectedToggle() == rb1) {nutritionalGroupFilter = "fat";}  if (group1.getSelectedToggle() == rb2) {nutritionalGroupFilter = "carbohydrates";}
 				if (group1.getSelectedToggle() == rb3) {nutritionalGroupFilter = "fiber";} if (group1.getSelectedToggle() == rb4) {nutritionalGroupFilter = "calories";}
 				if (group1.getSelectedToggle() == rb5) {nutritionalGroupFilter = "protein";}
 				
+				if (enterNumberField.getText().isEmpty()) {
+					errorPopup("You must add a nutritional value to create a filter.");
+					return;
+				}
 				if (!enterNumberField.getText().isEmpty()) {
 					nutritionalFilter  = enterNumberField.getText();
 				}
+				formatCheck = negativeValidation(nutritionalFilter);
+				if (!formatCheck) {
+					errorPopup("Your nutiritional input cannot be negative.");
+					formatCheck = true;
+					return;
+				} 
+				formatCheck = doubleValidation(nutritionalFilter);
+				if (!formatCheck) {
+					errorPopup("ERROR: Your nutiritional input '" + nutritionalFilter + "' was invalid. " 
+							+ System.lineSeparator() + System.lineSeparator()
+							+ "This needs to be in a double format." + System.lineSeparator() 
+							+ System.lineSeparator() + "ie:  1.0 or 22.35 or ##.## or ##");
+					formatCheck = true;
+					return;
+				} else { 
 				
 				System.out.println(nutritionalGroupFilter);
 				System.out.println(operatorFilter);
 				System.out.println(nutritionalFilter);
 				
-				// call create nutritional filter
+				// START Add to Lists
+				appliedFilterList.add(nutritionalGroupFilter  + " " + operatorFilter 
+						+ " " + nutritionalFilter);
+				allFilterList.add(nutritionalGroupFilter  + " " + operatorFilter 
+						+ " " + nutritionalFilter);
+				//END
+				
+				//Call filter method
+				getFoodNames(foodData.filterByNutrients(appliedFilterList)); 
+				//
 				
 				mealStage.close();
+				}
 			}
 		});
 		// END Create Buttons and Assign Actions
@@ -964,6 +1021,7 @@ public class Main extends Application {
 				newFood.addNutrient(nameInput, Double.valueOf(fatInput));
 				newFood.addNutrient(nameInput, Double.valueOf(caloriesInput));
 				foodData.addFoodItem(newFood);
+				getFoodNames(foodData.getAllFoodItems());
 				
 				saveBtn.setOnMouseReleased(q -> popup.close());
 			}
@@ -983,7 +1041,7 @@ public class Main extends Application {
 		popup.setScene(popupAddFood);
 		popup.show();
 	}
-
+		
 	/**This helper method creates a new button
 	 * this makes our buttons consistent
 	 */
@@ -1030,6 +1088,8 @@ public class Main extends Application {
 		newText.setFill(Color.rgb(r, g, b));
 		return newText;
 	}
+
+
 	/**This helper method checks whether the 
 	 * string can be parsed into a double
 	 * and whether the input is negative
@@ -1053,17 +1113,24 @@ public class Main extends Application {
         }
 		return true;
 	}
-	/* Helper method that creates an error popup
-	with an error message
-	@param errorMessage String error message user wants to display
-	*/
+
+	private boolean negativeValidation (String stringInput) {
+		if (stringInput.contains("-")) {
+			return false;
+		}
+		return true;
+	}
+
 	private void errorPopup (String errorMessage) {
 
 		Stage errorStage = new Stage();
 		errorStage.setTitle("Error");
+		
 		BorderPane popUp = new BorderPane();
 		popUp.setPrefSize(200,200);
 		popUp.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(15,15,15,15))));
+
+		//TITLE
 		BorderPane top = new BorderPane();
 		top.setPrefHeight(50);
 		Text t4 = newHeaderText("ERROR", 30, 105, 10, 21);
@@ -1071,14 +1138,32 @@ public class Main extends Application {
 		t4.setCache(true);
 		top.setCenter(t4);
 		popUp.setTop(top);
+		
 		Text t2 = new Text();
 		t2.setText(errorMessage);
 		popUp.setCenter(t2);
+		
 		Scene scene = new Scene(popUp, 400, 300, Color.rgb(255, 239, 229));
 		errorStage.setScene(scene);
 		errorStage.show();
-	}
 
+	}
+	
+	/*
+	 * Updates this class's String FoodList to have a new set of values from
+	 * a List<FoodItem>.  Sorts as well.
+	 * @param fooditemList comes from FoodData class
+	 */
+	private void getFoodNames(List<FoodItem> foodItemList) {
+		if (foodItemList.isEmpty()) {
+			foodList.clear();
+		}
+		
+		for (int i = 0; i < foodItemList.size(); ++i) {
+			   foodList.add(foodItemList.get(i).getName());
+		   }
+		   Collections.sort(foodList);
+	   }
 
 	public static void main(String[] args) {
 
@@ -1098,7 +1183,7 @@ public class Main extends Application {
 		//			ex.printStackTrace();
 		//			System.exit(-1);
 		//		}
-
+		
 		for (int i = 0; i <150; i++){
 			foodList.add("food #" + i);
 		}
@@ -1117,34 +1202,18 @@ public class Main extends Application {
 		mealList.add("test6");
 		mealList.add("test4");
 
-		appliedFilterList.add("Filter1");
-		appliedFilterList.add("Filter3");
-		appliedFilterList.add("Filter4");
-
-		unappliedFilterList.add("Filter2");
-
-		allFilterList.add("Filter1");
-		allFilterList.add("Filter3");
-		allFilterList.add("Filter4");
-
-		allFilterList.add("Filter2");
+//		appliedFilterList.add("fat <= 1");
+//		appliedFilterList.add("fat <= 2");
+//		appliedFilterList.add("fat >= 2");
+//
+//		unappliedFilterList.add("fat == 2");
+//
+//		allFilterList.add("fat <= 1");
+//		allFilterList.add("fat <= 2");
+//		allFilterList.add("fat >= 2");
+//
+//		allFilterList.add("fat == 2");
 
 		launch(args);
 	}
-	/*
-	 * Transforms a List<FoodItem> to an ObservableList<String> of the foodItem names
-	 * @ param foodList comes from FoodData class
-	 * returns ObservableList<String> to be used for UI representation
-	 */
-	private ObservableList<String> getFoodNames(List<FoodItem> foodList) {
-		   ObservableList<String> foodNameString = (ObservableList<String>) new ArrayList<String>();
-		   
-		   for (int i = 0; i < foodList.size(); ++i) {
-			   foodNameString.add(foodList.get(i).getName());
-		   }
-		   
-		   
-		   Collections.sort(foodNameString);
-		   return foodNameString;
-	   }
 }
