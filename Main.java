@@ -1042,8 +1042,13 @@ public class Main extends Application {
 
 		launch(args);
 	}
-	private List<String> getFoodNames(List<FoodItem> foodList) {
-		   List<String> foodNameString = new ArrayList<String>();
+	/*
+	 * Transforms a List<FoodItem> to an ObservableList<String> of the foodItem names
+	 * @ param foodList comes from FoodData class
+	 * returns ObservableList<String> to be used for UI representation
+	 */
+	private ObservableList<String> getFoodNames(List<FoodItem> foodList) {
+		   ObservableList<String> foodNameString = (ObservableList<String>) new ArrayList<String>();
 		   
 		   for (int i = 0; i < foodList.size(); ++i) {
 			   foodNameString.add(foodList.get(i).getName());
