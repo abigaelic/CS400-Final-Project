@@ -101,6 +101,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	return rangeSearchHelperEqualsEquals(key, startingLeaf);
         }
         
+        if (comparator.contentEquals("<=")){
+        	return rangeSearchHelperLessThanOrEquals(key, startingLeaf);
+        }
+        
         return null;
     }
     
@@ -286,10 +290,35 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     }
     
     @SuppressWarnings("unchecked")
-	private List<V> rangeSearchHelperLessThanOrEquals(K key, String comparator, Node node){
+	private List<V> rangeSearchHelperLessThanOrEquals(K key, LeafNode childNode){
     	ArrayList<V> result = new ArrayList<V>();	
 
-    	return null;
+		K currentKey = childNode.getFirstLeafKey();
+		int i = 0;
+		
+		//check if we need to evaluate the next node
+		while (childNode.next != null && childNode.next.getFirstLeafKey().equals(key)) {
+   			childNode = childNode.next;
+    		}
+        		
+		// process the first leaf
+		//System.out.println("i = " + i);
+		for (int j = i; j < childNode.keys.size(); j++) {
+			currentKey = childNode.keys.get(j);
+			if (key.compareTo(currentKey) >= 0) {
+				result.add(childNode.values.get(j));
+			}
+		}
+		
+		//process the rest of the leaves
+		while (childNode.previous != null) {
+			childNode = childNode.previous;
+			// add the values
+			for (int k = 0; k < childNode.keys.size(); k++) {
+    			result.add(childNode.values.get(k));
+    		} 
+   		}
+		return result;
     }
     
     /*
@@ -1005,7 +1034,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
         
-        /*
+        
         bpTree.insert(10.0, 10.0);
         //System.out.println(bpTree);
         bpTree.insert(20.0, 20.0);
@@ -1072,12 +1101,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         
         
         System.out.println(bpTree);
-        List<Double> filteredValues = bpTree.rangeSearch(12.0d, ">=");
+        List<Double> filteredValues = bpTree.rangeSearch(10.0d, "<=");
         System.out.println("Filtered values: " + filteredValues.toString());
         
         //System.out.println("Values tree: ");
         //bpTree.printTreeValues();
-        */
+        
         
         /*
         // create a pseudo random number generator
