@@ -1042,4 +1042,15 @@ public class Main extends Application {
 
 		launch(args);
 	}
+	private List<String> getFoodNames(List<FoodItem> foodList) {
+		   List<String> foodNameString = new ArrayList<String>();
+		   
+		   for (int i = 0; i < foodList.size(); ++i) {
+			   foodNameString.add(foodList.get(i).getName());
+		   }
+		   
+		   
+		   Collections.sort(foodNameString);
+		   return foodNameString;
+	   }
 }
