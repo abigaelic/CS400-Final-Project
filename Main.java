@@ -851,9 +851,8 @@ public class Main extends Application {
 	}
 
 	/**This helper method builds the Create
-	 * New Food Item Pop-Up
-	 * where an end-user can enter a info to
-	 * filter the names on
+	 * New Food Item Pop-Up 
+	 * Where a user can create a new food item
 	 */
 		private void newFoodItemPopUp() {
 		BorderPane screen = new BorderPane();
@@ -868,8 +867,8 @@ public class Main extends Application {
 		top.setCenter(t4);
 		top.setBottom(nutritionalErrorMessage);
 		top.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(0))));
-
-
+		
+		//create grid with labels and text fields
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
@@ -902,7 +901,6 @@ public class Main extends Application {
 		carbohydrateField.setPromptText("Enter Carbohydrates");
 		grid.add(carbohydrateField, 1, 4);
 
-
 		Label fiber = new Label("Fiber: ");
 		grid.add(fiber, 0, 5);
 		TextField fiberField = new TextField();
@@ -924,6 +922,7 @@ public class Main extends Application {
 		calorieField.setPromptText("Enter Calorie Count");
 		grid.add(calorieField, 1, 7);
 
+		//create buttons
 		Button saveBtn = new Button();
 		saveBtn.setText("Save");
 		saveBtn.alignmentProperty().set(Pos.CENTER_LEFT);
@@ -937,11 +936,8 @@ public class Main extends Application {
 		bottomButtons.getChildren().addAll(saveBtn,cancelBtn);
 		bottomButtons.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(0))));
 		bottomButtons.alignmentProperty().set(Pos.CENTER);
-
-		// Mary Alice to add save things
-		
-		
-		//saveBtn.set;
+			
+		//when the user tries to save, do validation before trying to create a food item
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
 			String fiberInput = fiberField.getText();
@@ -949,7 +945,7 @@ public class Main extends Application {
 			String carbohydrateInput = carbohydrateField.getText();
 			String fatInput = fatField.getText();
 			String caloriesInput = calorieField.getText();
-			String nameInput = nameField.getText();
+			String nameInput = nameField.getText().toLowerCase();
 			String IDinput = IDField.getText();
 			System.out.println(doubleValidation(fiberInput));
 			if (((doubleValidation(fiberInput) == true) && (fiberInput != null)) &&
@@ -969,10 +965,13 @@ public class Main extends Application {
 				saveBtn.setOnMouseReleased(q -> popup.close());
 			}
 			else {
-				errorPopup("Error: Please fill out all the fields. Values need to be in a double format." + System.lineSeparator() 
-				+ System.lineSeparator() + "ie:  1.0 or 22.35 or ##.## or ##");
-			
-		}}});
+				errorPopup("Error: Please fill out all the fields. "
+						+ System.lineSeparator()
+						+ "Values must be in a double format. "
+						+ System.lineSeparator()
+						+ "Values must be positive." + System.lineSeparator() 
+				+ System.lineSeparator() + "ie:  1.0 or 22.35 or ##.## or ##");			
+		}}});//End of save button action
 		screen.setTop(top);
 		screen.setCenter(grid);
 		screen.setBottom(bottomButtons);
@@ -1028,6 +1027,55 @@ public class Main extends Application {
 		newText.setFill(Color.rgb(r, g, b));
 		return newText;
 	}
+	/**This helper method checks whether the 
+	 * string can be parsed into a double
+	 * and whether the input is negative
+	 * @param  stringInput  String input
+	 * @returns boolean 
+	 * returns true if the string can be converted into a double
+	 * returns false if the number contains a '-'
+	 * returns false if an exception is thrown
+	 */
+	private boolean doubleValidation (String stringInput) {
+        try {
+        	Double.valueOf(stringInput);
+        	if (stringInput.contains("-")) {
+        		return false;
+        	}
+        } catch (NumberFormatException e) {
+        	return false;
+        }
+        catch (Exception e) {
+        	return false;
+        }
+		return true;
+	}
+	/* Helper method that creates an error popup
+	with an error message
+	@param errorMessage String error message user wants to display
+	*/
+	private void errorPopup (String errorMessage) {
+
+		Stage errorStage = new Stage();
+		errorStage.setTitle("Error");
+		BorderPane popUp = new BorderPane();
+		popUp.setPrefSize(200,200);
+		popUp.setBackground(new Background(new BackgroundFill(Color.rgb(255, 239, 229), null, new Insets(15,15,15,15))));
+		BorderPane top = new BorderPane();
+		top.setPrefHeight(50);
+		Text t4 = newHeaderText("ERROR", 30, 105, 10, 21);
+		t4.setTextAlignment(TextAlignment.CENTER);
+		t4.setCache(true);
+		top.setCenter(t4);
+		popUp.setTop(top);
+		Text t2 = new Text();
+		t2.setText(errorMessage);
+		popUp.setCenter(t2);
+		Scene scene = new Scene(popUp, 400, 300, Color.rgb(255, 239, 229));
+		errorStage.setScene(scene);
+		errorStage.show();
+	}
+
 
 	public static void main(String[] args) {
 
