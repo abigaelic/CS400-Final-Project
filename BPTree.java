@@ -53,7 +53,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     @Override
     public void insert(K key, V value) {
         // TODO : Complete
-    	System.out.println("Inserting " + key + "...");
+    	//System.out.println("Inserting " + key + "...");
     	root.insert(key, value);
     }
     
@@ -114,7 +114,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     	
     	// if leaf node, we found the starter node
     	if (node.getType().equals("LeafNode")) {
-    		System.out.println("Found starter leaf: " + node);
+    		//System.out.println("Found starter leaf: " + node);
     		return (LeafNode) node;
     	}
     	
@@ -528,7 +528,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	}
             	
             	for (int j = children.size() - 1; j >= 0 && !found; j--) {
-            		System.out.println("Child for comparison is " + this.children.get(j).getFirstLeafKey());
+            		//System.out.println("Child for comparison is " + this.children.get(j).getFirstLeafKey());
             		if (this.children.get(j).getFirstLeafKey().compareTo(key) <= 0) {
             			found = true;
             			//System.out.println("Found index = " + j);
@@ -727,7 +727,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         private void bubbleSort() {
-        	System.out.println("Calling bubbleSort (InternalNode) on " + this);
+        	//System.out.println("Calling bubbleSort (InternalNode) on " + this);
 			int remaining = keys.size() - 1;
 		      for(int x = 0; x < (keys.size()-1); x++) {
 		         for(int y = 0; y < (remaining); y++) {
@@ -750,8 +750,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         private void bubbleSortList(List<BPTree<K, V>.Node> children2) {
-        	System.out.println("Calling bubbleSortList (InternalNode) on this " + this);
-        	System.out.println("Calling bubbleSortList (InternalNode) on children2 " + children2);
+        	//System.out.println("Calling bubbleSortList (InternalNode) on this " + this);
+        	//System.out.println("Calling bubbleSortList (InternalNode) on children2 " + children2);
         	int remaining = children2.size() - 1;
 		      for(int x = 0; x < (children2.size()-1); x++) {
 		         for(int y = 0; y < (remaining); y++) {
@@ -775,7 +775,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 		         remaining--;
 		      }
 		      
-		      System.out.println("Children2 after bubble sort: " + children2);
+		      //System.out.println("Children2 after bubble sort: " + children2);
         }
         
         @SuppressWarnings("unchecked")
@@ -1067,7 +1067,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
         
-        /*
+        
         bpTree.insert(0.2,0.0);
         bpTree.insert(0.8,0.0);
         bpTree.insert(0.0,0.0);
@@ -1090,10 +1090,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         bpTree.insert(0.8,0.0);
         bpTree.insert(0.8,0.0);
         bpTree.insert(0.5,0.0);
-        System.out.println(bpTree);
+        //System.out.println(bpTree);
         bpTree.insert(0.5,0.0);
-        System.out.println(bpTree);
-        */
+        //System.out.println(bpTree);
+        
         /*
         bpTree.insert(0.2, 10.0);
         //System.out.println(bpTree);
