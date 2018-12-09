@@ -22,6 +22,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
     // Map of nutrients and their corresponding index
     private HashMap<String, BPTree<Double, FoodItem>> indexes;
     
+    private BPTree<Double, FoodItem> caloriesTree;
+    private BPTree<Double, FoodItem> fatTree;
+    private BPTree<Double, FoodItem> carbohydratesTree;
+    private BPTree<Double, FoodItem> fiberTree;
+    private BPTree<Double, FoodItem> proteinTree;
     
     /**
      * Public constructor
@@ -127,8 +132,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
 						
 						foodItemList.add(foodItem);  // add new Item to list
 						
-						
-//TODO: figure out how to add item to BPTree
+						caloriesTree.insert(calorieCount, foodItem);
+						fatTree.insert(fatGrams, foodItem);
+						carbohydratesTree.insert(carbGrams, foodItem);
+						fiberTree.insert(fiberGrams, foodItem);
+						proteinTree.insert(proteinGrams, foodItem);
 					
 			} // END while loop
 			} // END if statement
@@ -241,6 +249,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public void addFoodItem(FoodItem foodItem) { //me
         foodItemList.add(foodItem);
+	
+	caloriesTree.insert(foodItem.getNutrientValue("calories"), foodItem);
+	fatTree.insert(foodItem.getNutrientValue("fat"), foodItem);
+	carbohydratesTree.insert(foodItem.getNutrientValue("carbohydrates"), foodItem);
+	fiberTree.insert(foodItem.getNutrientValue("fiber"), foodItem);
+	proteinTree.insert(foodItem.getNutrientValue("protein"), foodItem);
     }
 
     /**
@@ -253,22 +267,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	return foodItemList;
     }
     
-    
-    /**
-     *  Creates List of food names
-     *  Alphabetizes list
-     * @param foodList
-     * @return List<String> of all food item names
-     */
-   List<String> getFoodNames(List<FoodItem> foodList) {
-	   List<String> foodNameString = new ArrayList<String>();
-	   
-	   for (int i = 0; i < foodList.size(); ++i) {
-		   foodNameString.add(foodList.get(i).getName());
-	   }
-	   Collections.sort(foodNameString);
-	   return foodNameString;
-   }
+   
 
     /**
      * Save the list of food items in ascending order by name
