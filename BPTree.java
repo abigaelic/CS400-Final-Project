@@ -501,23 +501,24 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * (non-Javadoc)
          * @see BPTree.Node#insert(java.lang.Comparable, java.lang.Object)
          */
-        void insert(K key, V value) {
+        @SuppressWarnings("unchecked")
+		void insert(K key, V value) {
             // TODO : Complete
-        	//System.out.println("Adding key : " + key);
+        	System.out.println("Adding key : " + key);
         	
         	//start at the farthest right index
         	int i = keys.size() - 1;
-        	//System.out.println("Evaluating node " + this);
-        	//System.out.println("Keys.size for key " + key + " is " + i);
-        	//System.out.println("Children.size for key " + key + " is " + children.size());
-        	//System.out.println("Children for node " + this + " is " + this.children);
+        	System.out.println("Evaluating node " + this);
+        	System.out.println("Keys.size for key " + key + " is " + i);
+        	System.out.println("Children.size for key " + key + " is " + children.size());
+        	System.out.println("Children for node " + this + " is " + this.children);
         	boolean found = false;
         	int foundIndex = 0;
         	
         	// Find the child which is going to have the new key 
         	// if the first key of the child is greater that key to add, move down the list
-        	//System.out.println("Key for evaluation is " + key);
-        	//System.out.println("i = " + i);
+        	System.out.println("Key for evaluation is " + key);
+        	System.out.println("i = " + i);
             while (i >= 0 && !found) {
             	//handle root
             	K largestRootKey = this.keys.get(this.keys.size() - 1);
@@ -527,10 +528,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	}
             	
             	for (int j = children.size() - 1; j >= 0 && !found; j--) {
-            		//System.out.println("Child for comparison is " + this.children.get(j).getFirstLeafKey());
-            		if (this.children.get(j).getFirstLeafKey().compareTo(key) < 0) {
+            		System.out.println("Child for comparison is " + this.children.get(j).getFirstLeafKey());
+            		if (this.children.get(j).getFirstLeafKey().compareTo(key) <= 0) {
             			found = true;
-            			//System.out.println("Found index = " + j);
+            			System.out.println("Found index = " + j);
             			foundIndex = j;
             		}
             	}
@@ -541,24 +542,41 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             }
             
             Node foundChild = this.children.get(foundIndex);
-            //System.out.println("Found child = " + foundChild);
+            System.out.println("Found child = " + foundChild);
+            
+            /*
             if (foundChild.getType().equals("LeafNode")) {
             	boolean done = false;
             	//double check that we aren't running into an issue with duplicates
-            	@SuppressWarnings("unchecked")
-				LeafNode foundChildLeaf = (LeafNode) foundChild;
+            	LeafNode foundChildLeaf = (LeafNode) foundChild;
             	while (!done) {
-            		//System.out.println(foundChildLeaf.next.getFirstLeafKey());
             		if (foundChildLeaf.next != null && key.compareTo(foundChildLeaf.next.getFirstLeafKey()) > 0) {
-            			foundChild = foundChildLeaf.next;
-            			foundChildLeaf = foundChildLeaf.next;
+                		System.out.println("We updated foundChild in the duplicate check section");               		
+                		foundChild = ((LeafNode) foundChild).getNext();
+            			foundChildLeaf = foundChildLeaf.getNext();
+            			System.out.println("foundChild = " + foundChild);
+            			System.out.println("foundChildLeaf = " + foundChildLeaf);
+            			System.out.println("foundChild Parent = " + foundChildLeaf.getParent());
+            			System.out.println("foundChild next = " + foundChildLeaf.getNext());
+            			System.out.println("foundChild next Parent = " + foundChildLeaf.getNext().getParent());
+            			
             		}
             		else {
             			done = true;
             		}
             	}
+            	
             }
-            foundChild.insert(key, value);
+            */
+            
+            //System.out.println("Found child right before insert is = " + foundChild);
+            
+            //if (foundChild.getType().equals("LeafNode")) {
+            //System.out.println("foundChild Parent = " + ((BPTree<K, V>.LeafNode) foundChild).getParent());
+			//System.out.println("foundChild next = " + ((BPTree<K, V>.LeafNode) foundChild).getNext());
+			//System.out.println("foundChild next Parent = " + ((BPTree<K, V>.LeafNode) foundChild).getNext().getParent());
+            //}
+			foundChild.insert(key, value);
         	
         }
         
@@ -658,8 +676,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	//System.out.println("Left children = " + left.children);
         	for (int i = 0; i < left.children.size(); i++) {
         		//System.out.println(left.children.get(i).getType());
-        		if (left.children.get(i) instanceof BPTree.LeafNode) {
-        			((BPTree<K, V>.LeafNode) left.children.get(i)).setParent(left);
+        		if (left.children.get(i).getType().equals("LeafNode")) {
+        			((LeafNode) left.children.get(i)).setParent(left);
         			//System.out.println("Internal node split - parent update completed for child " + left.children.get(i) + " to parent " + left);
         		}
         	}
@@ -709,6 +727,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         private void bubbleSort() {
+        	System.out.println("Calling bubbleSort (InternalNode) on " + this);
 			int remaining = keys.size() - 1;
 		      for(int x = 0; x < (keys.size()-1); x++) {
 		         for(int y = 0; y < (remaining); y++) {
@@ -718,12 +737,21 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 		              keys.set(y+1, keys.get(y));
 		              keys.set(y, tmpKey);
 		            }
+		            
+		            
+		            else if (keys.get(y).compareTo(keys.get(y+1)) == 0) {
+		            	
+		            	
+		            }
+		            
 		         }
 		         remaining--;
 		      }
         }
         
         private void bubbleSortList(List<BPTree<K, V>.Node> children2) {
+        	System.out.println("Calling bubbleSortList (InternalNode) on this " + this);
+        	System.out.println("Calling bubbleSortList (InternalNode) on children2 " + children2);
         	int remaining = children2.size() - 1;
 		      for(int x = 0; x < (children2.size()-1); x++) {
 		         for(int y = 0; y < (remaining); y++) {
@@ -746,6 +774,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 		         }
 		         remaining--;
 		      }
+		      
+		      System.out.println("Children2 after bubble sort: " + children2);
         }
         
         @SuppressWarnings("unchecked")
@@ -826,6 +856,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         void insert(K key, V value) {
             // TODO : Complete
+        	//System.out.println("Inside leafNode insert. Inserting key: " + key + ". Node before insert is " + this);
+        	//System.out.println("Inside leafNode insert. Inserting key: " + key + ". Parent before insert is " + this.getParent());
         	keys.add(key);
         	values.add(value);
         	this.bubbleSort();
@@ -998,6 +1030,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 		}
 		
 		private void bubbleSort() {
+			//System.out.println("Calling bubbleSort (LeafNode) on " + this);
 			int remaining = keys.size() - 1;
 		      for(int x = 0; x < (keys.size()-1); x++) {
 		         for(int y = 0; y < (remaining); y++) {
@@ -1034,76 +1067,106 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
         
+        bpTree.insert(0.2,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.0,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.5,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.0,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.2,0.0);
+        bpTree.insert(0.0,0.0);
+        bpTree.insert(0.5,0.0);
+        bpTree.insert(0.5,0.0);
+        bpTree.insert(0.2,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.5,0.0);
+        bpTree.insert(0.5,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.5,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.8,0.0);
+        bpTree.insert(0.5,0.0);
+        System.out.println(bpTree);
+        bpTree.insert(0.5,0.0);
+        System.out.println(bpTree);
         
+        /*
+        bpTree.insert(0.2, 10.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.5, 20.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.0, 5.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.2, 7.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.2, 10.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.2, 30.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.8, 8.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.2, 9.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.8, 11.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.8, 6.0);
+        //System.out.println(bpTree);
+        bpTree.insert(0.8, 35.0);
+        System.out.println(bpTree);
+        bpTree.insert(0.5, 45.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(12.0, 55.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(2.0, 65.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(8.0, 4.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(0.0, 3.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(6.0, 10.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(7.0, 20.0);
+        System.out.println(bpTree);
+        //bpTree.insert(1.0, 5.0);
+        //System.out.println(bpTree);
+        //bpTree.insert(1.0, 7.0);
+        /*
         bpTree.insert(10.0, 10.0);
-        //System.out.println(bpTree);
-        bpTree.insert(20.0, 20.0);
-        //System.out.println(bpTree);
-        bpTree.insert(5.0, 5.0);
-        //System.out.println(bpTree);
-        bpTree.insert(7.0, 7.0);
-        //System.out.println(bpTree);
-        bpTree.insert(10.0, 10.0);
-        //System.out.println(bpTree);
         bpTree.insert(30.0, 30.0);
-        //System.out.println(bpTree);
         bpTree.insert(8.0, 8.0);
-        //System.out.println(bpTree);
         bpTree.insert(9.0, 9.0);
-        //System.out.println(bpTree);
         bpTree.insert(11.0, 11.0);
-        //System.out.println(bpTree);
         bpTree.insert(6.0, 6.0);
-        //System.out.println(bpTree);
         bpTree.insert(35.0, 35.0);
-        //System.out.println(bpTree);
         bpTree.insert(45.0, 45.0);
-        //System.out.println(bpTree);
         bpTree.insert(55.0, 55.0);
-        //System.out.println(bpTree);
         bpTree.insert(65.0, 65.0);
         //System.out.println(bpTree);
         bpTree.insert(4.0, 4.0);
-        //System.out.println(bpTree);
         bpTree.insert(3.0, 3.0);
-        //System.out.println(bpTree);
-        bpTree.insert(10.0, 10.0);
-        //System.out.println(bpTree);
-        bpTree.insert(20.0, 20.0);
-        //System.out.println(bpTree);
-        bpTree.insert(5.0, 5.0);
-        //System.out.println(bpTree);
-        bpTree.insert(7.0, 7.0);
-        bpTree.insert(10.0, 10.0);
-        bpTree.insert(30.0, 30.0);
-        bpTree.insert(8.0, 8.0);
-        bpTree.insert(9.0, 9.0);
-        bpTree.insert(11.0, 11.0);
-        bpTree.insert(6.0, 6.0);
-        bpTree.insert(35.0, 35.0);
-        bpTree.insert(45.0, 45.0);
-        bpTree.insert(55.0, 55.0);
-        bpTree.insert(65.0, 65.0);
-        //System.out.println(bpTree);
-        bpTree.insert(4.0, 4.0);
-        bpTree.insert(3.0, 3.0);
-        
-        //System.out.println(bpTree);
+        */
+        /*
+        System.out.println(bpTree);
         //System.out.println("Values tree: ");
         //bpTree.printTreeValues();
         
         
-        for (int i = 1 ; i < 10 ; i++) {
+        for (int i = 1 ; i < 1000 ; i++) {
         	double id = i/1.0;
         	bpTree.insert(id, id);
         	//System.out.println(bpTree);
         }
         
-        
+        System.out.println(bpTree);
+        */
+        /*
         System.out.println(bpTree);
         List<Double> filteredValues = bpTree.rangeSearch(10.0d, "<=");
         System.out.println("Filtered values: " + filteredValues.toString());
-        
+        */
         //System.out.println("Values tree: ");
         //bpTree.printTreeValues();
         
@@ -1122,7 +1185,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // just that it functions as a data structure with
         // insert, rangeSearch, and toString() working.
         List<Double> list = new ArrayList<>();
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 100; i++) {
             Double j = dd[rnd1.nextInt(4)];
             list.add(j);
             bpTree.insert(j, j);
