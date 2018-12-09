@@ -605,7 +605,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	// sort the children
             	//parent.bubbleSortList(parent.children);
         		root = newRoot;
-        		parent = (BPTree<K, V>.InternalNode) root;
+        		parent = (InternalNode) root;
         	}
         	
         	else {
@@ -637,11 +637,11 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	//need to split the children array between the two new nodes
         	int countToRemove = 0; // for every node we add to left child, we will want to
         	                       // remove it from the existing children Array
-        	for (int i = 0; i < current.children.size(); i++) {
-        		if (children.get(i).getFirstLeafKey().compareTo(keyToPromote) < 0) {
+        	for (int i = 0; i < current.children.size()/2; i++) {
+        		//if (children.get(i).getFirstLeafKey().compareTo(keyToPromote) < 0) {
         			leftChildren.add(children.get(i));
         			countToRemove++;        			
-        		}
+        		//}
         	}
         	
         	// remove from the existing children arrayList
@@ -1132,5 +1132,5 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         System.out.println("Filtered values: " + filteredValues.toString());
         */
     }
-
+	
 } // End of class BPTree
