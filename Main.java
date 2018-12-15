@@ -1195,7 +1195,7 @@ public class Main extends Application {
 			// add name and food item to nameMap
 			nameMap.put(foodItemList.get(i).getName(), foodItemList.get(i));
 		   }
-		   Collections.sort(foodList);
+		   Collections.sort(foodList, String.CASE_INSENSITIVE_ORDER);
 	   }
 	/**
 	 * Provides the sum of nutrient values for a selected meal
