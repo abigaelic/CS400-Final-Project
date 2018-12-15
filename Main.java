@@ -1,6 +1,6 @@
 /**
  * Filename:   Main.java
- * Project:    Team Project, Milestone2, Java FX GUI interface at start
+ * Project:    Team Project
  * Authors:    Abby Fry, CS400 @ Epic
  *
  * Semester:   Fall 2018
@@ -104,7 +104,6 @@ public class Main extends Application {
 		bPane.setPrefSize(2000, 1000);
 
 		//testing
-		doubleValidation("test");
 		
 		//TOP
 		BorderPane top = new BorderPane();
@@ -155,6 +154,14 @@ public class Main extends Application {
 		Button buttonDelete = newButton("Delete A Filter",300, 20);	
 		buttonDelete.setOnMouseReleased(e -> deleteAFilterPopUp());
 		Button buttonClear = newButton("Clear All Filters",300, 20);
+		buttonClear.setOnMouseReleased(new EventHandler<MouseEvent>() {
+			@Override public void handle(MouseEvent e) {
+				appliedFilterList.clear();
+				unappliedFilterList.clear();
+				allFilterList.clear();
+				getFoodNames(foodData.filterByNutrients(appliedFilterList));
+			}
+		});
 
 		Button buttonFoodNameFilter = newButton("Add Food Name Filter",300, 20);	
 		buttonFoodNameFilter.setOnMouseReleased(e -> foodNameFilterPopUp());
@@ -388,6 +395,7 @@ public class Main extends Application {
 					allFilterList.remove(filterToDelete);
 					unappliedFilterList.remove(filterToDelete);
 					appliedFilterList.remove(filterToDelete);
+					System.out.println(appliedFilterList.size());
 					getFoodNames(foodData.filterByNutrients(appliedFilterList)); 
 					filterToDelete = null;
 				}
@@ -634,19 +642,18 @@ public class Main extends Application {
 		Button buttonLOAD= newButton("Load", 200, 20);
 		buttonLOAD.setAlignment(Pos.BASELINE_CENTER);
 		bottom.setCenter(buttonLOAD);
-		
-
-		
+				
 		buttonLOAD.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
 				String filepath = null;
 				
 				filepath  = enterFileField.getText();
 				
-				if (filepath != null) {
+				if (!enterFileField.getText().isEmpty()) {
 					// call load from file
 					foodData.loadFoodItems(filepath);
 					foodList.clear();
+					mealList.clear();
 					getFoodNames(foodData.getAllFoodItems());
 				}
 				
@@ -1061,7 +1068,7 @@ public class Main extends Application {
 				foodData.addFoodItem(newFood);
 				
 				foodList.clear();  // clear existing list
-				getFoodNames(foodData.getAllFoodItems()); // load list with new item
+				getFoodNames(foodData.filterByNutrients(appliedFilterList)); // load list with new item
 				
 				saveBtn.setOnMouseReleased(q -> popup.close());
 			}
@@ -1221,6 +1228,7 @@ public class Main extends Application {
 		if (foodItemList.isEmpty()) {
 			foodList.clear();
 		}
+		foodList.clear();
 		
 		for (int i = 0; i < foodItemList.size(); ++i) {
 			// add item to ObservableList of food  
@@ -1279,54 +1287,6 @@ public class Main extends Application {
 	
 
 	public static void main(String[] args) {
-
-		//		String fileName = "file.txt";
-		//		File inputFile = null;
-		//		Scanner sc = null;
-		//		
-		//		try {
-		//			inputFile = new File(fileName);
-		//			sc = new Scanner(inputFile);
-		//			while(sc.hasNextLine()) {
-		//				String name = sc.nextLine();
-		//				names.add(name);
-		//			}
-		//			sc.close();
-		//		} catch (Exception ex) {
-		//			ex.printStackTrace();
-		//			System.exit(-1);
-		//		}
-		
-		for (int i = 0; i <150; i++){
-			foodList.add("food #" + i);
-		}
-
-		foodList.add("food test");
-		foodList.add("food test2");
-		foodList.add("food test6");
-		foodList.add("food test4");
-
-		for (int i = 0; i < 20; i++){
-			mealList.add("meal item #" + i);
-		}
-
-		mealList.add("test");
-		mealList.add("test2");
-		mealList.add("test6");
-		mealList.add("test4");
-
-//		appliedFilterList.add("fat <= 1");
-//		appliedFilterList.add("fat <= 2");
-//		appliedFilterList.add("fat >= 2");
-//
-//		unappliedFilterList.add("fat == 2");
-//
-//		allFilterList.add("fat <= 1");
-//		allFilterList.add("fat <= 2");
-//		allFilterList.add("fat >= 2");
-//
-//		allFilterList.add("fat == 2");
-
 		launch(args);
 	}
 }
