@@ -109,7 +109,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 						String[] commaSplit = oneLineOfData.split(",");
 						id = commaSplit[0]; // food item id is first element
 						
-						name = commaSplit[1]; // food item name is second element
+						name = commaSplit[1].trim(); // food item name is second element
 						
 						calories = commaSplit[2]; // calories label is third element
 						// calorie value is fourth element; convert calories from String to Double
