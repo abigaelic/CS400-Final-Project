@@ -135,7 +135,7 @@ public class Main extends Application {
 
 	/**This helper method builds the Food List
 	 * side of the main window.
-	 * 
+	 * @return the left side BorderPane
 	 */
 	private BorderPane setLeft() {
 		//MEAL
@@ -271,9 +271,9 @@ public class Main extends Application {
 
 		return toReturn;
 	}
-	/**This helper method builds the Food List
+	/**This helper method builds the Meal List
 	 * side of the main window.
-	 * 
+	 * @return the right side BorderPane
 	 */
 	private BorderPane setRight() {
 		// MEAL
@@ -1049,6 +1049,9 @@ public class Main extends Application {
 		
 	/**This helper method creates a new button
 	 * this makes our buttons consistent
+	 * @param text that displays on the button
+	 * @param button width
+	 * @param button height
 	 */
 	private Button newButton(String text, int width, int height) {
 		Button toReturn = new Button(text);
@@ -1061,6 +1064,7 @@ public class Main extends Application {
 	/**This helper method creates a new horizontal
 	 * Box
 	 * this makes our HBoxes consistent
+	 * return hbox
 	 */
 	private HBox addHBox() {
 		HBox hbox = new HBox();
@@ -1072,6 +1076,7 @@ public class Main extends Application {
 	/**This helper method creates a new vertical
 	 * Box
 	 * this makes our VBoxes consistent
+	 * @return vbox
 	 */
 	private VBox addVBox() {
 		VBox vbox = new VBox();
@@ -1082,6 +1087,12 @@ public class Main extends Application {
 
 	/**This helper method creates new Header
 	 * Text with the appropriate formatting.
+	 * @param text
+	 * @param size
+	 * @param r is the red color value
+	 * @param g is the green color value
+	 * @param b is the blue color value
+	 * @returns the text
 	 */
 	private Text newHeaderText(String text, int size, int r, int g, int b) {
 		Text newText = new Text();
@@ -1118,14 +1129,25 @@ public class Main extends Application {
         }
 		return true;
 	}
-
+	
+	/**This helper method checks whether the 
+	 * input string contains a '-' to
+	 * prevent negative value inputs
+	 * @param  stringInput  String input
+	 * @returns boolean 
+	 * returns false if the string contains a '-'
+	 */
 	private boolean negativeValidation (String stringInput) {
 		if (stringInput.contains("-")) {
 			return false;
 		}
 		return true;
 	}
-
+	
+	/**This helper method creates an error message
+	 * popup with the given text
+	 * @param  errorMessage the string that displays in the error popup
+	 */
 	private void errorPopup (String errorMessage) {
 
 		Stage errorStage = new Stage();
