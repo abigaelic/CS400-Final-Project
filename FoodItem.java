@@ -1,3 +1,4 @@
+package application;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +24,10 @@ public class FoodItem {
      * @param id unique id of the food item 
      */
     public FoodItem(String id, String name) {
-        this.id = id;
-        this.name = name;
+        this.id = id; // id for food item
+        this.name = name; //  name for food item
         
+        // Map of nutrients and values
         HashMap<String, Double> nutrients = new HashMap<String, Double>();
         this.nutrients = nutrients;
     }
@@ -60,30 +62,27 @@ public class FoodItem {
     
     /**
      * Gets the name of the food item
-     * 
      * @return name of the food item
      */
     public String getName() {
         return name;
     }
+    
 
     /**
      * Gets the unique id of the food item
-     * 
      * @return id of the food item
      */
     public String getID() {
-        
         return id;
     }
     
+  
     /**
      * Gets the nutrients of the food item
-     * 
      * @return nutrients of the food item
      */
     public HashMap<String, Double> getNutrients() {
-        
         return nutrients;
     }
 
@@ -97,14 +96,11 @@ public class FoodItem {
     		
     		if (nutrients.containsKey(name)) { // if nutrient already present and mapped, update value
     			nutrients.replace(name, value);
-    			System.out.println("nutrient values updated. Value = " + nutrients.get(name));
     		}
     		
     		else {  // add new nutrient and value
     			nutrients.put(name, value);
-    			System.out.println("nutrient values added. Value = " + nutrients.get(name));
     		}
-
     	}
     }
 
@@ -116,32 +112,10 @@ public class FoodItem {
     	
     	if (nutrients.containsKey(name)) { // if nutrient is present
     		return nutrients.get(name); // return nutrient value
-    		
     	}
+    	
     	else {
     		return 0;   // return 0 if not present in map
-    	}
-    	
-    	
-    	
-    	
-    }
-    
-    public static void main(String [] args){
-    	FoodItem chocolate = new FoodItem("one","chocolate");
-    	
-    	//chocolate.addNutrient("fat", 4.5);
-    	//System.out.println(chocolate.getNutrients().toString());
-    	
-    	//System.out.println(chocolate.getNutrientValue("fat"));
-    	
-    	FoodItem testOrange = new FoodItem();
-    	
-    	
-    	//System.out.println(testOrange.getName());
-    	
-    	
-    	//System.out.println(chocolate.getID());
+    	}	
     }
 }
-
