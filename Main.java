@@ -184,7 +184,6 @@ public class Main extends Application {
 		bottom.setLeft(hbox2);
 
 		//number of food items label
-		Label foodNumber = new Label();
 		foodNumber.setText(0 + " food(s)");
 		if (!foodList.isEmpty()) {
 			foodNumber.textProperty().bind(Bindings.size(foodList).asString("%s food(s)"));
