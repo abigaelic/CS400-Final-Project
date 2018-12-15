@@ -80,7 +80,8 @@ public class Main extends Application {
 	static ObservableList<String> appliedFilterList = FXCollections.observableArrayList();
 	static ObservableList<String> unappliedFilterList = FXCollections.observableArrayList();
 	static ObservableList<String> allFilterList = FXCollections.observableArrayList();
-
+	Label foodNumber = new Label();
+	
 	String selectedMealItem = null;
 	String stringFilter = null;
 	
@@ -183,9 +184,9 @@ public class Main extends Application {
 
 		//number of food items label
 		Label foodNumber = new Label();
-		foodNumber.setText(foodList.size() + " food(s)");
-		if (foodList.isEmpty()) {
-			foodNumber.setText(0 + " food(s)");
+		foodNumber.setText(0 + " food(s)");
+		if (!foodList.isEmpty()) {
+			foodNumber.textProperty().bind(Bindings.size(foodList).asString("%s food(s)"));
 		}
 		foodNumber.setAlignment(Pos.CENTER_LEFT);
 		foodNumber.setTextFill(Color.rgb(255, 226, 206));
@@ -225,7 +226,7 @@ public class Main extends Application {
 		//creating food list view
 		ListView<String> foodListPane = new ListView<>();
 		foodListPane.setItems(foodList);
-		foodListPane.setBackground(new Background(new BackgroundFill(Color.rgb(249, 201, 207), null, new Insets(0))));
+		foodListPane.setBackground(new Background(new BackgroundFill(Color.rgb(158, 53, 74), null, new Insets(0))));
 		foodListPane.setPrefWidth(900);
 		foodListPane.autosize();
 
@@ -432,7 +433,39 @@ public class Main extends Application {
 
 		if (!mealList.isEmpty()) {
 			// Call the nutritional summary methods to print to screen
-			analyzeMeal(mealList);
+		
+			double [] totalValues = analyzeMeal(mealList);
+			double totalCalories = totalValues[0];
+			double totalFat = totalValues[1];
+			double totalCarbs = totalValues[2];
+			double totalFiber = totalValues[3];
+			double totalProtein = totalValues[4];		
+			
+			BorderPane summary = new BorderPane();
+			BorderPane top = new BorderPane();
+			top.setPrefHeight(50);
+			BorderPane bottom = new BorderPane();
+			bottom.setPrefHeight(50);
+			BorderPane middle = new BorderPane();
+			BorderPane s1 = new BorderPane();
+			BorderPane s2 = new BorderPane();
+			
+			Text text1 = new Text();
+			text1.setText("Calories: " + totalCalories + "          Fat: " + totalFat + "           Carbs: " + totalCarbs);
+			text1.setTextAlignment(TextAlignment.CENTER);
+			s1.setCenter(text1);
+			Text text2 = new Text();
+			text2.setText("Fiber: " + totalFiber + "          Protein: " + totalProtein);
+			text2.setTextAlignment(TextAlignment.CENTER);
+			s2.setCenter(text2);
+			
+			middle.setTop(s1);
+			middle.setBottom(s2);
+			summary.setTop(top);
+			summary.setCenter(middle);
+			summary.setBottom(bottom);
+			popUp.setCenter(summary);
+			
 		}
 
 		BorderPane toAdd2 = new BorderPane();
@@ -1196,6 +1229,7 @@ public class Main extends Application {
 			nameMap.put(foodItemList.get(i).getName(), foodItemList.get(i));
 		   }
 		   Collections.sort(foodList, String.CASE_INSENSITIVE_ORDER);
+		   foodNumber.textProperty().bind(Bindings.size(foodList).asString("%s food(s)"));
 	   }
 	/**
 	 * Provides the sum of nutrient values for a selected meal
