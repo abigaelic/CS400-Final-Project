@@ -1020,13 +1020,15 @@ public class Main extends Application {
 			(nameInput != null) && (IDinput != null))
 			{
 				FoodItem newFood = new FoodItem(IDinput, nameInput);
-				newFood.addNutrient(nameInput, Double.valueOf(fiberInput));
-				newFood.addNutrient(nameInput, Double.valueOf(proteinInput));
-				newFood.addNutrient(nameInput, Double.valueOf(carbohydrateInput));
-				newFood.addNutrient(nameInput, Double.valueOf(fatInput));
-				newFood.addNutrient(nameInput, Double.valueOf(caloriesInput));
+				newFood.addNutrient("fiber", Double.valueOf(fiberInput));
+				newFood.addNutrient("protein", Double.valueOf(proteinInput));
+				newFood.addNutrient("carbohydrate", Double.valueOf(carbohydrateInput));
+				newFood.addNutrient("fat", Double.valueOf(fatInput));
+				newFood.addNutrient("calories", Double.valueOf(caloriesInput));
 				foodData.addFoodItem(newFood);
-				getFoodNames(foodData.getAllFoodItems());
+				
+				foodList.clear();  // clear existing list
+				getFoodNames(foodData.getAllFoodItems()); // load list with new item
 				
 				saveBtn.setOnMouseReleased(q -> popup.close());
 			}
