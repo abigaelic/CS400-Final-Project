@@ -12,7 +12,7 @@ import java.util.Scanner;
  * This class represents the backend for managing all 
  * the operations associated with FoodItems
  * 
- * @author sapan (sapan@cs.wisc.edu)
+ * @author sapan (sapan@cs.wisc.edu), Amanda Weppler Ansel, and Kelly East
  */
 public class FoodData implements FoodDataADT<FoodItem> {
     
@@ -22,26 +22,27 @@ public class FoodData implements FoodDataADT<FoodItem> {
     // Map of nutrients and their corresponding index
     private HashMap<String, BPTree<Double, FoodItem>> indexes;
     
+    // Trees to store each nutrient value with the FoodItem
     private BPTree<Double, FoodItem> caloriesTree;
     private BPTree<Double, FoodItem> fatTree;
     private BPTree<Double, FoodItem> carbohydratesTree;
     private BPTree<Double, FoodItem> fiberTree;
     private BPTree<Double, FoodItem> proteinTree;
     
-    
-    
-    
-    
     /**
      * Public constructor
      */
     public FoodData() {
+	
+	// List of the food items
     	List<FoodItem> foodItemList = new ArrayList<FoodItem>();
     	this.foodItemList = foodItemList;
     	
+	// Map of nutrients and corresponding index
     	HashMap<String, BPTree <Double, FoodItem>> indexes = new HashMap<String, BPTree <Double, FoodItem>>();
     	this.indexes = indexes;
     	
+	// Trees to store nutrients and FoodItems
     	BPTree<Double, FoodItem> caloriesTree = new BPTree<Double, FoodItem>(3);
     	this.caloriesTree = caloriesTree;
         BPTree<Double, FoodItem> fatTree = new BPTree<Double, FoodItem>(3);
@@ -53,9 +54,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
         BPTree<Double, FoodItem> proteinTree = new BPTree<Double, FoodItem>(3);
         this.proteinTree = proteinTree;
         
+	// Put nutrient trees into the Map when creating FoodData object
         indexes.put("calories", caloriesTree);
         indexes.put("fat", fatTree);
-        indexes.put("carbohydrates", carbohydratesTree);
+        indexes.put("carbohydrate", carbohydratesTree);
         indexes.put("fiber", fiberTree);
         indexes.put("protein", proteinTree);
     }
@@ -65,6 +67,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * Loads data from the specified csv file
      * Constructs food items from parsed data
      * Adds food items to foodItemList
+     * @param filepath is the user-entered filepath 
+     * or the file to display on initial load
      * 
      */
     @Override
@@ -84,18 +88,18 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				while (input.hasNextLine()) { // move through file while there are additional lines
 					oneLineOfData = input.nextLine();
 					
-					String id = null;
-					String name = null;
-					String calories = null;
-					Double calorieCount = 0.0;
-					String fat = null;
-					Double fatGrams = 0.0;
-					String carbohydrate = null;
-					Double carbGrams = 0.0;
-					String fiber = null;
-					Double fiberGrams = 0.0;
-					String protein = null;
-					Double proteinGrams = 0.0;
+					String id = null;  // ID for foodItem
+					String name = null; // name for foodItem
+					String calories = null; // Nutrient label "calories"
+					Double calorieCount = 0.0; // value of calories nutrient
+					String fat = null; // Nutrient label "fat"
+					Double fatGrams = 0.0; // value of fat nutrient
+					String carbohydrate = null; // Nutrient label "carbohydrate"
+					Double carbGrams = 0.0; // value of carbohydrate nutrient
+					String fiber = null; // Nutrient label "fiber"
+					Double fiberGrams = 0.0; // value of fiber nutrient
+					String protein = null; // Nutrient label of "protein"
+					Double proteinGrams = 0.0; // value of protein nutrient
 					
 				
 					if (oneLineOfData.length() == 0) { // if line in file is blank, move to next one
@@ -104,34 +108,28 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					try {
 						String[] commaSplit = oneLineOfData.split(",");
 						id = commaSplit[0]; // food item id is first element
-						System.out.println("id is " + id);
+						
 						name = commaSplit[1]; // food item name is second element
-						System.out.println("name is " + name);
 						
 						calories = commaSplit[2]; // calories label is third element
-						System.out.println("calories is " + calories);
-						calorieCount = Double.parseDouble(commaSplit[3]); // convert calories from String to Double
-						System.out.println("calorie count is" + calorieCount);
+						// calorie value is fourth element; convert calories from String to Double
+						calorieCount = Double.parseDouble(commaSplit[3]); 
 						
 						fat = commaSplit[4]; // fat label is fifth element
-						System.out.println("fat is " + fat);
-						fatGrams = Double.parseDouble(commaSplit[5]); // convert fat grams value from String to Double
-						System.out.println("fat grams are" + fatGrams);
+						// fat value is sixth element; convert fat grams value from String to Double
+						fatGrams = Double.parseDouble(commaSplit[5]); 
 						
 						carbohydrate = commaSplit[6]; // carbohydrate label is seventh element
-						System.out.println("carbs are " + carbohydrate);
-						carbGrams = Double.parseDouble(commaSplit[7]); // convert from String to Double
-						System.out.println("carb grams are " + carbGrams);
+						// carbohydrate value is eighth element; convert value from String to Double
+						carbGrams = Double.parseDouble(commaSplit[7]); 
 						
 						fiber = commaSplit[8]; // fiber label is ninth element
-						System.out.println("fiber is " + fiber);
-						fiberGrams = Double.parseDouble(commaSplit[9]); // convert from String to Double
-						System.out.println("fiber grams are" + fiberGrams);
+						// fiber value is tenth element; convert value from String to Double
+						fiberGrams = Double.parseDouble(commaSplit[9]); 
 						
 						protein = commaSplit[10]; // protein label is eleventh element
-						System.out.println("protein is " + protein);
-						proteinGrams = Double.parseDouble(commaSplit[11]); //convert from String to Double
-						System.out.println("protein grams are " + proteinGrams);
+						// protein value is twelfth element; convert value from String to Double
+						proteinGrams = Double.parseDouble(commaSplit[11]); 
 					
 					} // END inner TRY block
 					
@@ -141,17 +139,14 @@ public class FoodData implements FoodDataADT<FoodItem> {
 						continue;
 					} // END inner CATCH block
 					
-				// check for duplicate names
-					
+				// check for duplicate names; if duplicate append "*" to distinguish names
 					for (int n = 0; n < foodItemList.size(); ++n) {
 						if (foodItemList.get(n).getName().equals(name) && 
 								!foodItemList.get(n).getID().equals(id)) {
 							name = name + "*";
 						}
 					}
-					
-					
-					
+
 						FoodItem foodItem = new FoodItem(id, name);		// create new food item 
 						System.out.println("Food item " + name + " created");
 						
@@ -163,23 +158,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
 						
 						foodItemList.add(foodItem);  // add new Item to list
 						
-			//TODO: figure out how to add item to BPTree -- test that this works
-						
+						// Add FoodItem and nutrient value to corresponding nutrient trees
 						caloriesTree.insert(calorieCount, foodItem);
 						fatTree.insert(fatGrams, foodItem);
 						carbohydratesTree.insert(carbGrams, foodItem);
 						fiberTree.insert(fiberGrams, foodItem);
 						proteinTree.insert(proteinGrams, foodItem);
-						
-						
-
+	
 					
 			} // END while loop
 			} // END if statement
 		} // END outer TRY block
 			
 				catch (IOException  e) {
-		   			System.out.println("WARNING: Could not load room contents from file "  + filePath + ".");
+		   			System.out.println("WARNING: Could not load food from file "  + filePath + ".");
 		   			}	// End CATCH block
 		           
 		           finally { // no matter what
@@ -191,30 +183,27 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
     /**
      * Searches food list for provided substring
+     * @param substring is provided by user
      * @return new list nameFilter with matching food items
+     * if no food item matched, return empty list
      */
     @Override
-    public List<FoodItem> filterByName(String substring) { //me
+    public List<FoodItem> filterByName(String substring) { 
         List<FoodItem> nameFilter = new ArrayList<>(); // will hold filtered list
     	
-        if (substring != null) {
+        if (substring != null) { // if substring has value
         
+	// search through food list for provided string 
         for (int i = 0; i < foodItemList.size(); i++) {
         	if (foodItemList.get(i).getName().toLowerCase().contains(substring.toLowerCase())) {
+			// if found, add food to name filtered list
         		nameFilter.add(foodItemList.get(i));
-        		System.out.println("food item " + foodItemList.get(i).getName() + " added to filtered list");
-        	}
-        }
+      		} // END IF
+        } // END FOR
         
-        }
-        /*if (nameFilter.size() == 0) {
-        	//System.out.println("No foods found");
-        	return foodItemList;
-        }
-        else { */
-        //System.out.println("Item 1 is " + nameFilter.get(0).getName());
+        } // END IF !null
+
         return nameFilter;
-        //}
     }
 
     /**
@@ -300,18 +289,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
     /**
      * Adds provided food item to foodItemList
+     * @param foodItem the food item instance to be added
      */
     @Override
-    public void addFoodItem(FoodItem foodItem) { //me
+    public void addFoodItem(FoodItem foodItem) {
  
-    	
+    	// Add item to food list
     	foodItemList.add(foodItem);
         
+	// Add nutrients from item to nutrient trees
         caloriesTree.insert(foodItem.getNutrientValue("calories"), foodItem);
-		fatTree.insert(foodItem.getNutrientValue("fat"), foodItem);
-		carbohydratesTree.insert(foodItem.getNutrientValue("carbohydrates"), foodItem);
-		fiberTree.insert(foodItem.getNutrientValue("fiber"), foodItem);
-		proteinTree.insert(foodItem.getNutrientValue("protein"), foodItem);
+	fatTree.insert(foodItem.getNutrientValue("fat"), foodItem);
+	carbohydratesTree.insert(foodItem.getNutrientValue("carbohydrate"), foodItem);
+	fiberTree.insert(foodItem.getNutrientValue("fiber"), foodItem);
+	proteinTree.insert(foodItem.getNutrientValue("protein"), foodItem);
         
     }
 
@@ -320,23 +311,21 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * @returns foodItemList
      */
     @Override
-    public List<FoodItem> getAllFoodItems() { //me
+    public List<FoodItem> getAllFoodItems() { 
         
     	return foodItemList;
     }
-    
- 
+
 
     /**
      * Save the list of food items in ascending order by name
-     * 
      * @param filename name of the file where the data needs to be saved 
      */
 	@Override
-	public void saveFoodItems(String filename) { //me
+	public void saveFoodItems(String filename) { 
 		
-		File newFoodFile = null; //file for saving food list to
-		PrintStream writer = null; //used to write food list to file
+		File newFoodFile = null; // file for saving food list to
+		PrintStream writer = null; // used to write food list to file
 		
 			try {
 				newFoodFile = new File(filename); 
@@ -346,16 +335,17 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					writer.print(foodItemList.get(f).getID()); // write id to file
 					writer.print(", "); // separator
 					writer.print(foodItemList.get(f).getName()); // write name to file
-					writer.print(", calories, "); // write calories to file
+					writer.print(", calories, "); // write calories label to file
 					writer.print(foodItemList.get(f).getNutrientValue("calories")); // calorie value
-					writer.print(", fat, ");
+					writer.print(", fat, "); // write fat label to file
 					writer.print(foodItemList.get(f).getNutrientValue("fat")); // fat value
-					writer.print(", carbohydrate, ");
+					writer.print(", carbohydrate, "); // write carbohydrate label to file
 					writer.print(foodItemList.get(f).getNutrientValue("carbohydrate")); // carb value
-					writer.print(", fiber, ");
+					writer.print(", fiber, "); // write fiber label to file
 					writer.print(foodItemList.get(f).getNutrientValue("fiber")); // fiber value
-					writer.print(", protein, ");
+					writer.print(", protein, "); // write protein label to file
 					writer.println(foodItemList.get(f).getNutrientValue("protein")); // protein value
+				
 				} // END FOR block
 			}// END TRY block
 			
@@ -368,46 +358,9 @@ public class FoodData implements FoodDataADT<FoodItem> {
 }
 	
 
-	 public static void main(String [] args){
-	     FoodData test = new FoodData();
-		 
-		 test.loadFoodItems("writetest.ddd"); 
-		 
-		/*System.out.println("calories tree: " + test.caloriesTree);
-		System.out.println(" carbs tree: " + test.carbohydratesTree);
-		System.out.println("fat tree: " + test.fatTree);
-		System.out.println("protein tree: " + test.proteinTree);
-		System.out.println("fiber tree: " + test.fiberTree); */
-		 
-		
-		 
-		 for (int p = 0; p < test.foodItemList.size(); ++p ) {
-			 System.out.println(test.foodItemList.get(p).getName());
-		 }
-		 
-		
-		 
-	     //System.out.println(test.foodItemList.get(0).getName());
-	     //System.out.println(test.foodItemList.get(1).getName());
-		 //test.filterByName(null);
-		 
-		// System.out.println("testing getAllFoodITems " + test.getAllFoodItems().get(0).getName());
-		 
-		 //FoodItem chocolate = new FoodItem("chocolate");
-		 //test.addFoodItem(chocolate);
-		 
-		// System.out.println("testing add " + test.getAllFoodItems().get(2).getName());
-		 
-		 //test.getAllFoodItems().get(1)
-		 
-		 //System.out.println(test.filterByName("aaa").get(0).getName());
-		 
-		 
-		 
-		 //System.out.println(test.getFoodNames(test.getAllFoodItems()) + "get food test");
-		 
-		// test.saveFoodItems("writetest.ddd");
-	    }
+	// public static void main(String [] args){
+	     
+	//    }
 	 
 	    
 }
