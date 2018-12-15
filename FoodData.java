@@ -83,6 +83,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			input = new Scanner(inputFile);
 			
 			if (input != null) {  // if file is not null
+			foodItemList.clear(); //clears the list to start from scratch	
 				
 				//read data from the file
 				while (input.hasNextLine()) { // move through file while there are additional lines
