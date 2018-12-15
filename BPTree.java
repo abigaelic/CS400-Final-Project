@@ -1,4 +1,5 @@
 package application;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -1100,7 +1101,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         
         	if (!this.containsKey(key)) {
         		// this leaf doesn't actually contain the key
-        		System.out.println("Cannot call contains key method on a leaf that "
+        		System.out.println("Cannot call keyIndex method on a leaf that "
         				+ "does not contain the key");
         		return -1;
         	}
@@ -1244,40 +1245,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * @param args
      */
     public static void main(String[] args) {
-        // create empty BPTree with branching factor of 3
-        // BPTree<Double, Double> BPTree = new BPTree<>(3);
-        
-    	/*
-        BPTree.insert(1.0, 1.0);
-        BPTree.insert(2.0, 2.0);
-        System.out.println(BPTree);
-        List<Double> filteredValues = BPTree.rangeSearch(1.0d, "<=");
-        System.out.println("Filtered values: " + filteredValues.toString());
-        */
-    	
-        // create a pseudo random number generator
-        /*
-        Random rnd1 = new Random();
-
-        // some value to add to the BPTree
-        Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
-
-        // build an ArrayList of those value and add to BPTree also
-        // allows for comparing the contents of the ArrayList 
-        // against the contents and functionality of the BPTree
-        // does not ensure BPTree is implemented correctly
-        // just that it functions as a data structure with
-        // insert, rangeSearch, and toString() working.
-        List<Double> list = new ArrayList<>();
-        for (int i = 0; i < 400; i++) {
-            Double j = dd[rnd1.nextInt(4)];
-            list.add(j);
-            BPTree.insert(j, j);
-            System.out.println("\n\nTree structure:\n" + BPTree.toString());
-        }
-        List<Double> filteredValues = BPTree.rangeSearch(0.0d, ">=");
-        System.out.println("Filtered values: " + filteredValues.toString());
-        */
     }
 	
 } // End of class BPTree
