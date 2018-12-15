@@ -1,3 +1,4 @@
+package application;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -97,331 +98,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     	if (key == null) {
     		return new ArrayList<V>();
     	}
-    	
-        // find appropriate leaf
-        LeafNode startingLeaf; 
-        startingLeaf = findStartingLeaf(key, root);
-        
-        // call into the right helper function give then comparator
-        if (comparator.contentEquals(">=")){
-        	return rangeSearchHelperGreaterThanOrEquals(key, startingLeaf);
-        }
-        
-        if (comparator.contentEquals("==")){
-        	return rangeSearchHelperEqualsEquals(key, startingLeaf);
-        }
-        
-        if (comparator.contentEquals("<=")){
-        	return rangeSearchHelperLessThanOrEquals(key, startingLeaf);
-        }
-        
-        return new ArrayList<V>();
-    }
-    
-    /**
-     * Find the initial leaf to evaluate for range search
-     * Once the initial leaf is found, check if previous and next leaves
-     * need to be evaluated as well
-     * 
-     * @param key
-     * @param node
-     * returns: LeafNode
-     */
-    @SuppressWarnings("unchecked")
-	private LeafNode findStartingLeaf(K key, Node node) {
-    	if (key == null || node == null) {
-    		// don't continue with null input
-    		return null;
-    	}
-    	
-    	Node foundChild = null;
-    	
-    	// if leaf node, we found the starter node
-    	if (getType(node).equals("LeafNode")) {
-    		return (LeafNode) node;
-    	}
-    	
-    	else {
-    		int i = node.keys.size() - 1;
-        	boolean found = false;
-        	int foundIndex = 0;
-        	
-        	// convert node to Internal Node
-        	InternalNode internalNode = (InternalNode) node;
-        	
-        	// Find the child which is going to have the new key 
-        	// if the first key of the child is greater that key to add, move down the list
-            while (i >= 0 && !found) {
-            	// handle root
-            	K largestRootKey = internalNode.keys.get(node.keys.size() - 1);
-            	if (key.compareTo(largestRootKey) > 0) {
-            		foundIndex = internalNode.children.size() - 1;
-            		found = true;
-            	}
-            	
-            	// continue comparing to children of the node
-            	for (int j = internalNode.children.size() - 1; j >= 0 && !found; j--) {
-            		if (internalNode.children.get(j).getFirstLeafKey().compareTo(key) <= 0) {
-            			found = true;
-            			foundIndex = j;
-            		}
-            	}
-            	
-            	if (!found) {
-            		// if we didn't find the right leaf, decrement i to look at next node's children
-            		i--;
-            	}
-            }
-            
-            foundChild = internalNode.children.get(foundIndex);
-            return findStartingLeaf(key, foundChild);
-            
-    	}
 
-    }
-    
-    /**
-     * Performs the range search for the == comparator
-     * Evaluates leaf nodes beginning with the node passed in to find all keys the match 
-     * the key parameter and returns a list of their values
-     * 
-     * @param key
-     * @param childNode
-     * returns: List<V> of values associated with keys equal to the passed in key
-     */
-    private List<V> rangeSearchHelperEqualsEquals(K key, LeafNode childNode){
-    	ArrayList<V> result = new ArrayList<V>();	
-    	
-    	if (key == null || childNode == null) {
-    		// don't continue with null input
-    		return result;
-    	}
-    	
-    	K currentKey = childNode.getFirstLeafKey();
-		int i = 0;
-		boolean found = false;
-				
-		// check if we need to evaluate the former node
-		if (childNode.previous != null) {
-    		K prevNodeLargestKey = childNode.previous.keys.get(childNode.previous.keys.size()-1);
-    		if (prevNodeLargestKey.equals(key)) {
-    			// if we get here, we need to evaluate the previous node
-    			//find starting point
-    			currentKey = childNode.previous.getFirstLeafKey();
-    			childNode = childNode.previous;
-        		while (key.compareTo(currentKey) > 0 ) {
-        			i++;
-        			currentKey = childNode.keys.get(i);
-        		}
-    		}
-        		
-    		// process the first leaf
-    		for (int j = i; j < childNode.keys.size(); j++) {
-    			currentKey = childNode.keys.get(j);
-    			if (key.compareTo(currentKey) == 0) {
-    				ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
-    				for (V m : valuesToAdd) {
-    					// add all values from the valuesToAdd list to result
-    					result.add(m);
-    				}
-    			}
-    		}
-    		
-		} // end if
-		
-		else {
-		 	// find starting point
-    		while (key.compareTo(currentKey) > 0  && i < (childNode.keys.size() - 1)) {
-    			i++;
-    			currentKey = childNode.keys.get(i);
-    		}
-    			    		
-    		// process the first leaf
-	    	for (int j = i; j < childNode.keys.size(); j++) {
-	    		currentKey = childNode.keys.get(j);
-	    		if (key.compareTo(currentKey) == 0) {
-	    			// if we found it, add to the result list
-	    			ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
-    				for (V m : valuesToAdd) {
-    					result.add(m);
-    				}
-	    		}
-	    	}
-		} // end else
-		
-		// process the rest of the leaves to look for matches to key
-		while (childNode.getNext() != null && !found) {
-			childNode = childNode.getNext();
-			// add the values
-			for (int k = 0; k < childNode.keys.size(); k++) {
-				if (childNode.keys.get(k).equals(key)) {
-					ArrayList<V> valuesToAdd = childNode.leafValues.get(k);
-    				for (V m : valuesToAdd) {
-    					result.add(m);
-    				}
-				}
-				
-				else {
-					found = true;
-				}
-    		} 
-   		}
-		
-		return result;
-
-    }
-    
-    /**
-     * Performs the range search for the >= comparator
-     * Evaluates leaf nodes beginning with the node passed in to find all keys the match 
-     * the key parameter or are greater and returns a list of their values
-     * 
-     * @param key
-     * @param childNode
-     * returns: List<V> of values associated with keys equal to 
-     * or greater than the passed in key
-     */
-	private List<V> rangeSearchHelperGreaterThanOrEquals(K key, LeafNode childNode){
-    		ArrayList<V> result = new ArrayList<V>();		
-        	
-        	if (key == null || childNode == null) {
-        		// don't continue with null input
-        		return result;
-        	}
-    		
-    		K currentKey = childNode.getFirstLeafKey();
-    		int i = 0;
-    		
-    		// check if we need to evaluate the former node
-    		if (childNode.previous != null) {
-	    		K prevNodeLargestKey = childNode.previous.keys.get(childNode.previous.keys.size()-1);
-	    		if (prevNodeLargestKey.equals(key)) {
-	    			// if we get here, we need to evaluate the previous node
-	    			// find starting point
-	    			currentKey = childNode.previous.getFirstLeafKey();
-	    			childNode = childNode.previous;
-	        		while (key.compareTo(currentKey) < 0 ) {
-	        			i++;
-	        			currentKey = childNode.keys.get(i);
-	        		}
-	    		}
-	        		
-	        		// process the first leaf
-	        		for (int j = i; j < childNode.keys.size(); j++) {
-	        			currentKey = childNode.keys.get(j);
-	        			if (key.compareTo(currentKey) <= 0) {
-	        				ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
-	        				for (V m : valuesToAdd) {
-	        					// add values to result
-	        					result.add(m);
-	        				}
-	        			}
-	        		}
-    		} // end if
-    		
-    		else {
-    		 	//find starting point
-	    		while (key.compareTo(currentKey) > 0  && i < (childNode.keys.size() - 1)) {
-	    			i++;
-	    			currentKey = childNode.keys.get(i);
-	    		}
-	    			    		
-	    		// process the first leaf
-		    	for (int j = i; j < childNode.keys.size(); j++) {
-		    		currentKey = childNode.keys.get(j);
-		    		if (key.compareTo(currentKey) <= 0) {
-		    			ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
-	    				for (V m : valuesToAdd) {
-	    					result.add(m);
-	    				}
-		    		}
-		    	}
-    		} // end else
-    		
-    		//process the rest of the leaves
-    		while (childNode.getNext() != null) {
-    			childNode = childNode.getNext();
-    			// add the values
-    			for (int k = 0; k < childNode.keys.size(); k++) {
-    				ArrayList<V> valuesToAdd = childNode.leafValues.get(k);
-    				for (V m : valuesToAdd) {
-    					result.add(m);
-    				}
-        		} 
-       		}
-    		return result;
-    }
-    
-    /**
-     * Performs the range search for the <= comparator
-     * Evaluates leaf nodes beginning with the node passed in to find all keys the match 
-     * the key parameter or are less than and returns a list of their values
-     * 
-     * @param key
-     * @param childNode
-     * returns: List<V> of values associated with keys equal to 
-     * or less than the passed in key
-     */
-    private List<V> rangeSearchHelperLessThanOrEquals(K key, LeafNode childNode){
-    	ArrayList<V> result = new ArrayList<V>();	
-    	
-    	if (key == null || childNode == null) {
-    		// don't continue with null input
-    		return result;
-    	}
-    	
-		K currentKey = childNode.getFirstLeafKey();
-		int i = 0;
-		
-		// check if we need to evaluate the next node
-		while (childNode.getNext() != null && childNode.getNext().getFirstLeafKey().equals(key)) {
-   			childNode = childNode.getNext();
-    		}
-        		
-		// process the first leaf
-		for (int j = i; j < childNode.keys.size(); j++) {
-			currentKey = childNode.keys.get(j);
-			if (key.compareTo(currentKey) >= 0) {
-				ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
-				for (V m : valuesToAdd) {
-					result.add(m);
-				}
-			}
-		}
-		
-		// process the rest of the leaves
-		while (childNode.previous != null) {
-			childNode = childNode.previous;
-			// add the values
-			for (int k = 0; k < childNode.keys.size(); k++) {
-				ArrayList<V> valuesToAdd = childNode.leafValues.get(k);
-				for (V m : valuesToAdd) {
-					result.add(m);
-				}
-    		} 
-   		}
-		return result;
-    }
-    
-    /**
-     * Returns the specific type of node - either internal or leaf
-     * 
-     * @param node
-     * returns: String associated with type of node
-     */
-    private String getType(Node node) {
-    	// InternalNode
-    	if (node instanceof BPTree.InternalNode) {
-    		return "InternalNode";
-    	}
-    	
-    	// LeafNode
-    	if (node instanceof BPTree.LeafNode) {
-    		return "LeafNode";
-    	}
-    	
-    	// Else
-    	else return "Node";
+        return root.rangeSearch(key, comparator);
     }
     
     /**
@@ -752,7 +430,75 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @see BPTree.Node#rangeSearch(java.lang.Comparable, java.lang.String)
          */
         List<V> rangeSearch(K key, String comparator) {
-        	return null;
+        	
+        	// find appropriate leaf
+            LeafNode startingLeaf; 
+            startingLeaf = findStartingLeaf(key, this);
+            
+            // call into the leafNode search function
+            return startingLeaf.rangeSearch(key, comparator);
+        }
+        
+        /**
+         * Find the initial leaf to evaluate for range search
+         * Once the initial leaf is found, check if previous and next leaves
+         * need to be evaluated as well
+         * 
+         * @param key
+         * @param node
+         * returns: LeafNode
+         */
+        @SuppressWarnings("unchecked")
+    	private LeafNode findStartingLeaf(K key, Node node) {
+        	if (key == null || node == null) {
+        		// don't continue with null input
+        		return null;
+        	}
+        	
+        	Node foundChild = null;
+        	
+        	// if leaf node, we found the starter node
+        	if (getType(node).equals("LeafNode")) {
+        		return (LeafNode) node;
+        	}
+        	
+        	else {
+        		int i = node.keys.size() - 1;
+            	boolean found = false;
+            	int foundIndex = 0;
+            	
+            	// convert node to Internal Node
+            	InternalNode internalNode = (InternalNode) node;
+            	
+            	// Find the child which is going to have the new key 
+            	// if the first key of the child is greater that key to add, move down the list
+                while (i >= 0 && !found) {
+                	// handle root
+                	K largestRootKey = internalNode.keys.get(node.keys.size() - 1);
+                	if (key.compareTo(largestRootKey) > 0) {
+                		foundIndex = internalNode.children.size() - 1;
+                		found = true;
+                	}
+                	
+                	// continue comparing to children of the node
+                	for (int j = internalNode.children.size() - 1; j >= 0 && !found; j--) {
+                		if (internalNode.children.get(j).getFirstLeafKey().compareTo(key) <= 0) {
+                			found = true;
+                			foundIndex = j;
+                		}
+                	}
+                	
+                	if (!found) {
+                		// if we didn't find the right leaf, decrement i to look at next node's children
+                		i--;
+                	}
+                }
+                
+                foundChild = internalNode.children.get(foundIndex);
+                return findStartingLeaf(key, foundChild);
+                
+        	}
+
         }
         
         /**
@@ -1077,43 +823,243 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		// don't continue with empty input
         		return result;
         	}
-        	
-        	K currentKey;
-        	
+
         	if (comparator.equals("==")) {
-        		// process the first leaf
-        		for (int j = 0; j < this.keys.size(); j++) {
-        			currentKey = this.keys.get(j);
-        			if (key.compareTo(currentKey) == 0) {
-        				// this key matches the criteria, add to result
-        				result.add(this.values.get(j));
-        			}
-        		} // end for
+        		return rangeSearchHelperEqualsEquals(key, this);
         	} // end if
         	
         	else if (comparator.equals(">=")) {
-        		// process the first leaf
-        		for (int j = 0; j < this.keys.size(); j++) {
-        			currentKey = this.keys.get(j);
-        			if (key.compareTo(currentKey) >= 0) {
-        				// this key matches the criteria, add to result
-        				result.add(this.values.get(j));
-        			}
-        		} // end for
+        		return rangeSearchHelperGreaterThanOrEquals(key, this);
         	} // end if
         	
         	else if (comparator.equals("<=")) {
-        		// process the first leaf
-        		for (int j = 0; j < this.keys.size(); j++) {
-        			currentKey = this.keys.get(j);
-        			if (key.compareTo(currentKey) <= 0) {
-        				// this key matches the criteria, add to result
-        				result.add(this.values.get(j));
-        			}
-        		} // end for
+        		return rangeSearchHelperLessThanOrEquals(key, this);
         	} // end if
         	
             return result;
+        }
+        
+        /**
+         * Performs the range search for the == comparator
+         * Evaluates leaf nodes beginning with the node passed in to find all keys the match 
+         * the key parameter and returns a list of their values
+         * 
+         * @param key
+         * @param childNode
+         * returns: List<V> of values associated with keys equal to the passed in key
+         */
+        private List<V> rangeSearchHelperEqualsEquals(K key, LeafNode childNode){
+        	ArrayList<V> result = new ArrayList<V>();	
+        	
+        	if (key == null || childNode == null) {
+        		// don't continue with null input
+        		return result;
+        	}
+        	
+        	K currentKey = childNode.getFirstLeafKey();
+    		int i = 0;
+    		boolean found = false;
+    				
+    		// check if we need to evaluate the former node
+    		if (childNode.previous != null) {
+        		K prevNodeLargestKey = childNode.previous.keys.get(childNode.previous.keys.size()-1);
+        		if (prevNodeLargestKey.equals(key)) {
+        			// if we get here, we need to evaluate the previous node
+        			//find starting point
+        			currentKey = childNode.previous.getFirstLeafKey();
+        			childNode = childNode.previous;
+            		while (key.compareTo(currentKey) > 0 ) {
+            			i++;
+            			currentKey = childNode.keys.get(i);
+            		}
+        		}
+            		
+        		// process the first leaf
+        		for (int j = i; j < childNode.keys.size(); j++) {
+        			currentKey = childNode.keys.get(j);
+        			if (key.compareTo(currentKey) == 0) {
+        				ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
+        				for (V m : valuesToAdd) {
+        					// add all values from the valuesToAdd list to result
+        					result.add(m);
+        				}
+        			}
+        		}
+        		
+    		} // end if
+    		
+    		else {
+    		 	// find starting point
+        		while (key.compareTo(currentKey) > 0  && i < (childNode.keys.size() - 1)) {
+        			i++;
+        			currentKey = childNode.keys.get(i);
+        		}
+        			    		
+        		// process the first leaf
+    	    	for (int j = i; j < childNode.keys.size(); j++) {
+    	    		currentKey = childNode.keys.get(j);
+    	    		if (key.compareTo(currentKey) == 0) {
+    	    			// if we found it, add to the result list
+    	    			ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
+        				for (V m : valuesToAdd) {
+        					result.add(m);
+        				}
+    	    		}
+    	    	}
+    		} // end else
+    		
+    		// process the rest of the leaves to look for matches to key
+    		while (childNode.getNext() != null && !found) {
+    			childNode = childNode.getNext();
+    			// add the values
+    			for (int k = 0; k < childNode.keys.size(); k++) {
+    				if (childNode.keys.get(k).equals(key)) {
+    					ArrayList<V> valuesToAdd = childNode.leafValues.get(k);
+        				for (V m : valuesToAdd) {
+        					result.add(m);
+        				}
+    				}
+    				
+    				else {
+    					found = true;
+    				}
+        		} 
+       		}
+    		
+    		return result;
+
+        }
+        
+        /**
+         * Performs the range search for the >= comparator
+         * Evaluates leaf nodes beginning with the node passed in to find all keys the match 
+         * the key parameter or are greater and returns a list of their values
+         * 
+         * @param key
+         * @param childNode
+         * returns: List<V> of values associated with keys equal to 
+         * or greater than the passed in key
+         */
+    	private List<V> rangeSearchHelperGreaterThanOrEquals(K key, LeafNode childNode){
+        		ArrayList<V> result = new ArrayList<V>();		
+            	
+            	if (key == null || childNode == null) {
+            		// don't continue with null input
+            		return result;
+            	}
+        		
+        		K currentKey = childNode.getFirstLeafKey();
+        		int i = 0;
+        		
+        		// check if we need to evaluate the former node
+        		if (childNode.previous != null) {
+    	    		K prevNodeLargestKey = childNode.previous.keys.get(childNode.previous.keys.size()-1);
+    	    		if (prevNodeLargestKey.equals(key)) {
+    	    			// if we get here, we need to evaluate the previous node
+    	    			// find starting point
+    	    			currentKey = childNode.previous.getFirstLeafKey();
+    	    			childNode = childNode.previous;
+    	        		while (key.compareTo(currentKey) < 0 ) {
+    	        			i++;
+    	        			currentKey = childNode.keys.get(i);
+    	        		}
+    	    		}
+    	        		
+    	        		// process the first leaf
+    	        		for (int j = i; j < childNode.keys.size(); j++) {
+    	        			currentKey = childNode.keys.get(j);
+    	        			if (key.compareTo(currentKey) <= 0) {
+    	        				ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
+    	        				for (V m : valuesToAdd) {
+    	        					// add values to result
+    	        					result.add(m);
+    	        				}
+    	        			}
+    	        		}
+        		} // end if
+        		
+        		else {
+        		 	//find starting point
+    	    		while (key.compareTo(currentKey) > 0  && i < (childNode.keys.size() - 1)) {
+    	    			i++;
+    	    			currentKey = childNode.keys.get(i);
+    	    		}
+    	    			    		
+    	    		// process the first leaf
+    		    	for (int j = i; j < childNode.keys.size(); j++) {
+    		    		currentKey = childNode.keys.get(j);
+    		    		if (key.compareTo(currentKey) <= 0) {
+    		    			ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
+    	    				for (V m : valuesToAdd) {
+    	    					result.add(m);
+    	    				}
+    		    		}
+    		    	}
+        		} // end else
+        		
+        		//process the rest of the leaves
+        		while (childNode.getNext() != null) {
+        			childNode = childNode.getNext();
+        			// add the values
+        			for (int k = 0; k < childNode.keys.size(); k++) {
+        				ArrayList<V> valuesToAdd = childNode.leafValues.get(k);
+        				for (V m : valuesToAdd) {
+        					result.add(m);
+        				}
+            		} 
+           		}
+        		return result;
+        }
+        
+        /**
+         * Performs the range search for the <= comparator
+         * Evaluates leaf nodes beginning with the node passed in to find all keys the match 
+         * the key parameter or are less than and returns a list of their values
+         * 
+         * @param key
+         * @param childNode
+         * returns: List<V> of values associated with keys equal to 
+         * or less than the passed in key
+         */
+        private List<V> rangeSearchHelperLessThanOrEquals(K key, LeafNode childNode){
+        	ArrayList<V> result = new ArrayList<V>();	
+        	
+        	if (key == null || childNode == null) {
+        		// don't continue with null input
+        		return result;
+        	}
+        	
+    		K currentKey = childNode.getFirstLeafKey();
+    		int i = 0;
+    		
+    		// check if we need to evaluate the next node
+    		while (childNode.getNext() != null && childNode.getNext().getFirstLeafKey().equals(key)) {
+       			childNode = childNode.getNext();
+        		}
+            		
+    		// process the first leaf
+    		for (int j = i; j < childNode.keys.size(); j++) {
+    			currentKey = childNode.keys.get(j);
+    			if (key.compareTo(currentKey) >= 0) {
+    				ArrayList<V> valuesToAdd = childNode.leafValues.get(j);
+    				for (V m : valuesToAdd) {
+    					result.add(m);
+    				}
+    			}
+    		}
+    		
+    		// process the rest of the leaves
+    		while (childNode.previous != null) {
+    			childNode = childNode.previous;
+    			// add the values
+    			for (int k = 0; k < childNode.keys.size(); k++) {
+    				ArrayList<V> valuesToAdd = childNode.leafValues.get(k);
+    				for (V m : valuesToAdd) {
+    					result.add(m);
+    				}
+        		} 
+       		}
+    		return result;
         }
         
         /**
@@ -1298,8 +1244,16 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
-        //BPTree<Double, Double> BPTree = new BPTree<>(3);
-             
+        // BPTree<Double, Double> BPTree = new BPTree<>(3);
+        
+    	/*
+        BPTree.insert(1.0, 1.0);
+        BPTree.insert(2.0, 2.0);
+        System.out.println(BPTree);
+        List<Double> filteredValues = BPTree.rangeSearch(1.0d, "<=");
+        System.out.println("Filtered values: " + filteredValues.toString());
+        */
+    	
         // create a pseudo random number generator
         /*
         Random rnd1 = new Random();
