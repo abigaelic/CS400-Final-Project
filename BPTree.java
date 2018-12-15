@@ -705,7 +705,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	
         	// handle duplicate insertion
         	if (isDuplicate) {
-	        	ArrayList<V> valuesForKey = leafValues.get(keyIndex(key)); //find the right values index
+			// find the right values index
+	        	ArrayList<V> valuesForKey = currentNode.getValues().get(currentNode.keyIndex(key)); 
 	        	valuesForKey.add(value);
         	}
         	
