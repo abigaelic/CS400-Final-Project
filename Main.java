@@ -654,6 +654,10 @@ public class Main extends Application {
 					foodData.loadFoodItems(filepath);
 					foodList.clear();
 					mealList.clear();
+					for (int i = 0; i < appliedFilterList.size(); i++) {
+						unappliedFilterList.add(appliedFilterList.get(i));
+						appliedFilterList.remove(i);
+					}
 					getFoodNames(foodData.getAllFoodItems());
 				}
 				
@@ -1229,14 +1233,15 @@ public class Main extends Application {
 			foodList.clear();
 		}
 		foodList.clear();
+		nameMap.clear();  //test
 		
 		for (int i = 0; i < foodItemList.size(); ++i) {
 			// add item to ObservableList of food  
 			foodList.add(foodItemList.get(i).getName());
 			// add name and food item to nameMap if not already present
-			if (!nameMap.containsKey(foodItemList.get(i).getName())) {
+			//if (!nameMap.containsKey(foodItemList.get(i).getName())) {
 			nameMap.put(foodItemList.get(i).getName(), foodItemList.get(i));
-			}
+			//}
 		   }
 		   Collections.sort(foodList, String.CASE_INSENSITIVE_ORDER);
 		   foodNumber.textProperty().bind(Bindings.size(foodList).asString("%s food(s)"));
