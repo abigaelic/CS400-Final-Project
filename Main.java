@@ -1225,8 +1225,10 @@ public class Main extends Application {
 		for (int i = 0; i < foodItemList.size(); ++i) {
 			// add item to ObservableList of food  
 			foodList.add(foodItemList.get(i).getName());
-			// add name and food item to nameMap
+			// add name and food item to nameMap if not already present
+			if (!nameMap.containsKey(foodItemList.get(i).getName())) {
 			nameMap.put(foodItemList.get(i).getName(), foodItemList.get(i));
+			}
 		   }
 		   Collections.sort(foodList, String.CASE_INSENSITIVE_ORDER);
 		   foodNumber.textProperty().bind(Bindings.size(foodList).asString("%s food(s)"));
