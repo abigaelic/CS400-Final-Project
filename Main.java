@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Observable;
 import java.util.Scanner;
+import java.util.HashMap;
 
 
 import javafx.application.Application;
