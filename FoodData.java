@@ -260,6 +260,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
     			String nameFilter = filterElements[2];
     			filteredFoodLists.add((ArrayList<FoodItem>) filterByName(nameFilter));
     		}
+		
+		else {
     		
     		// break out the nutrition filter elements
     		String nutrient = filterElements[0].toLowerCase();
@@ -270,6 +272,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     		BPTree<Double, FoodItem> tree = indexes.get(nutrient);
     		ArrayList<FoodItem> filteredFoods = (ArrayList<FoodItem>) tree.rangeSearch(key, comparator);
     		filteredFoodLists.add(filteredFoods);
+		}
     	}
     	
     	for (FoodItem i : filteredFoodLists.get(0)) {
