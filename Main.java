@@ -82,6 +82,9 @@ public class Main extends Application {
 
 	String selectedMealItem = null;
 	String stringFilter = null;
+	
+	// Map to store food names with corresponding items
+	static private HashMap<String,FoodItem> nameMap = new HashMap<String,FoodItem>();
 
 	/**This method launches the main window and 
 	 * calls other methods which launch sections of 
@@ -428,6 +431,7 @@ public class Main extends Application {
 
 		if (!mealList.isEmpty()) {
 			// Call the nutritional summary methods to print to screen
+			analyzeMeal(mealList);
 		}
 
 		BorderPane toAdd2 = new BorderPane();
@@ -1152,6 +1156,7 @@ public class Main extends Application {
 	/*
 	 * Updates this class's String FoodList to have a new set of values from
 	 * a List<FoodItem>.  Sorts as well.
+	 * Saves item name and item to HashMap nameMap
 	 * @param fooditemList comes from FoodData class
 	 */
 	private void getFoodNames(List<FoodItem> foodItemList) {
@@ -1160,10 +1165,57 @@ public class Main extends Application {
 		}
 		
 		for (int i = 0; i < foodItemList.size(); ++i) {
-			   foodList.add(foodItemList.get(i).getName());
+			// add item to ObservableList of food  
+			foodList.add(foodItemList.get(i).getName());
+			// add name and food item to nameMap
+			nameMap.put(foodItemList.get(i).getName(), foodItemList.get(i));
 		   }
 		   Collections.sort(foodList);
 	   }
+	/**
+	 * Provides the sum of nutrient values for a selected meal
+	 * Saves item name and item to HashMap nameMap
+	 * @param analyzeMealList is the mealList selected to be analyzed
+	 * returns double array with values of each nutrient sum
+	 */
+	private static double [] analyzeMeal(ObservableList<String> analyzeMealList) {
+		double [] totalValues = new double [5]; // store nutrient values
+		
+		double totalCalories = 0; // store sum of calories
+		double totalFat = 0; // store sum of fat
+		double totalCarbs = 0; // store sum of carbs
+		double totalProtein = 0; // store sum of protein
+		double totalFiber = 0; // store sum of fiber
+		
+		
+		if (analyzeMealList.size() > 0) { // if meal list is not empty
+		
+		// traverse meal list
+		for (int f = 0; f < analyzeMealList.size(); ++f) {
+			
+			// find FoodItem corresponding to food name
+			FoodItem food = nameMap.get(analyzeMealList.get(f));
+			
+			// add nutrient values for item to running total
+			totalCalories = totalCalories + food.getNutrientValue("calories");
+			totalFat = totalFat + food.getNutrientValue("fat");
+			totalCarbs = totalCarbs + food.getNutrientValue("carbohydrate");
+			totalFiber = totalFiber + food.getNutrientValue("fiber");
+			totalProtein = totalProtein + food.getNutrientValue("protein");
+		}
+			
+		}
+		
+		// store totals in array
+		totalValues[0] = totalCalories;
+		totalValues[1] = totalFat;
+		totalValues[2] = totalCarbs;
+		totalValues[3] = totalFiber;
+		totalValues[4] = totalProtein;
+		
+		return totalValues;
+	}
+	
 
 	public static void main(String[] args) {
 
