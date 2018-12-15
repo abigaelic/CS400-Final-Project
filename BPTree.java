@@ -40,7 +40,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             throw new IllegalArgumentException(
                "Illegal branching factor: " + branchingFactor);
         }
-        // TODO : Complete
         this.branchingFactor = branchingFactor;
         root = new LeafNode();
     }
@@ -56,6 +55,11 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     @Override
     public void insert(K key, V value) {
+    	// don't except null input
+    	if (key == null || value == null) {
+    		return;
+    	}
+    	
     	root.insert(key, value);
     }
     
@@ -88,7 +92,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             !comparator.contentEquals("==") && 
             !comparator.contentEquals("<=") )
             return new ArrayList<V>();
-               
+        
+    	// confirm we have a valid key
+    	if (key == null) {
+    		return new ArrayList<V>();
+    	}
+    	
         // find appropriate leaf
         LeafNode startingLeaf; 
         startingLeaf = findStartingLeaf(key, root);
@@ -106,7 +115,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	return rangeSearchHelperLessThanOrEquals(key, startingLeaf);
         }
         
-        return null;
+        return new ArrayList<V>();
     }
     
     /**
@@ -120,6 +129,11 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     @SuppressWarnings("unchecked")
 	private LeafNode findStartingLeaf(K key, Node node) {
+    	if (key == null || node == null) {
+    		// don't continue with null input
+    		return null;
+    	}
+    	
     	Node foundChild = null;
     	
     	// if leaf node, we found the starter node
@@ -177,7 +191,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     private List<V> rangeSearchHelperEqualsEquals(K key, LeafNode childNode){
     	ArrayList<V> result = new ArrayList<V>();	
-
+    	
+    	if (key == null || childNode == null) {
+    		// don't continue with null input
+    		return result;
+    	}
+    	
     	K currentKey = childNode.getFirstLeafKey();
 		int i = 0;
 		boolean found = false;
@@ -263,8 +282,13 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * or greater than the passed in key
      */
 	private List<V> rangeSearchHelperGreaterThanOrEquals(K key, LeafNode childNode){
-    		ArrayList<V> result = new ArrayList<V>();	
-
+    		ArrayList<V> result = new ArrayList<V>();		
+        	
+        	if (key == null || childNode == null) {
+        		// don't continue with null input
+        		return result;
+        	}
+    		
     		K currentKey = childNode.getFirstLeafKey();
     		int i = 0;
     		
@@ -340,7 +364,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     private List<V> rangeSearchHelperLessThanOrEquals(K key, LeafNode childNode){
     	ArrayList<V> result = new ArrayList<V>();	
-
+    	
+    	if (key == null || childNode == null) {
+    		// don't continue with null input
+    		return result;
+    	}
+    	
 		K currentKey = childNode.getFirstLeafKey();
 		int i = 0;
 		
@@ -557,6 +586,11 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         void insert(K key, V value) {
         	
+        	if (key == null || value == null) {
+        		// don't continue with null input
+        		return;
+        	}
+        	
         	//start at the farthest right index
         	int i = keys.size() - 1;
 
@@ -598,6 +632,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @see BPTree.Node#insert(java.lang.Comparable, java.lang.Object)
          */
         void insert(K key) {
+
+        	if (key == null) {
+        		// don't continue with null input
+        		return;
+        	}
+        	
         	// insert the key, then sort the node
         	keys.add(key);
         	this.bubbleSort();
@@ -763,6 +803,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         private void bubbleSortList(List<BPTree<K, V>.Node> childrenToSort) {
         	
+        	if (childrenToSort == null) {
+        		return;
+        	}
+        	
         	// process the list
         	int remaining = childrenToSort.size() - 1;
 		      for(int x = 0; x < (childrenToSort.size()-1); x++) {
@@ -792,6 +836,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         @SuppressWarnings("unchecked")
 		private InternalNode findParent(InternalNode current, InternalNode childNode) {
+        	
+        	if (current == null || childNode == null) {
+        		return null;
+        	}
         	
         	InternalNode parent = null;
         	
@@ -877,6 +925,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @see BPTree.Node#insert(Comparable, Object)
          */
         void insert(K key, V value) {
+        	
+        	if (key == null || value == null) {
+        		// don't continue with null input
+        		return;
+        	}
+        	
         	//
         	// handle duplicate keys
         	//
@@ -1018,6 +1072,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         List<V> rangeSearch(K key, String comparator) {
         	
         	ArrayList<V> result = new ArrayList<V>();
+        	
+        	if (key == null || comparator == null) {
+        		// don't continue with empty input
+        		return result;
+        	}
+        	
         	K currentKey;
         	
         	if (comparator.equals("==")) {
@@ -1064,7 +1124,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @return true if the leaf contains the key
          */
         private boolean containsKey(K key) {
-
+        	
+        	if (key == null) {
+        		// don't continue with null input
+        		return false;
+        	}
+        	
         	K currentKey;
 
     		for (int j = 0; j < this.keys.size(); j++) {
@@ -1085,7 +1150,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @return the index the key is located at 
          */
         private int keyIndex (K key) {
-        	
+        
         	if (!this.containsKey(key)) {
         		// this leaf doesn't actually contain the key
         		System.out.println("Cannot call contains key method on a leaf that "
