@@ -235,6 +235,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	if (foodItemList.size() == 0) {
     		return null;
     	}
+	
+	// handle an empty rule list
+	if (rules.size() == 0) {
+    		return getAllFoodItems();
+    	} 
     	
     	// master food list
     	ArrayList<FoodItem> masterFoodList = new ArrayList<FoodItem>();
