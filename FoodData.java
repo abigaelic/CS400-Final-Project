@@ -74,7 +74,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * 
      */
     @Override
-    public void loadFoodItems(String filePath) { //me
+    public void loadFoodItems(String filePath) { 
     	File inputFile = null; // File to read data from
 		Scanner input = null; // Scanner to read from file
 		String oneLineOfData = null; // next line of data from the file
@@ -108,6 +108,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					if (oneLineOfData.length() == 0) { // if line in file is blank, move to next one
 						continue;
 					} // END if length = 0
+					
 					try {
 						String[] commaSplit = oneLineOfData.split(",");
 						id = commaSplit[0]; // food item id is first element
