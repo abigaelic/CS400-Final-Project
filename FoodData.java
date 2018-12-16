@@ -87,6 +87,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			if (input != null) {  // if file is not null
 			foodItemList.clear(); //clears the list to start from scratch	
 				
+			//clear the BPTrees to start from scratch
+			BPTree<Double, FoodItem> caloriesTree = new BPTree<Double, FoodItem>(3);
+	        	BPTree<Double, FoodItem> fatTree = new BPTree<Double, FoodItem>(3);
+	        	BPTree<Double, FoodItem> carbohydratesTree = new BPTree<Double, FoodItem>(3);
+	       	 	BPTree<Double, FoodItem> fiberTree = new BPTree<Double, FoodItem>(3);
+	        	BPTree<Double, FoodItem> proteinTree = new BPTree<Double, FoodItem>(3);  
+	        
+	       		 // Put nutrient trees into the Map 
+	        	indexes.put("calories", caloriesTree);
+	        	indexes.put("fat", fatTree);
+	        	indexes.put("carbohydrate", carbohydratesTree);
+	        	indexes.put("fiber", fiberTree);
+	        	indexes.put("protein", proteinTree);
+				
 				//read data from the file
 				while (input.hasNextLine()) { // move through file while there are additional lines
 					oneLineOfData = input.nextLine();
