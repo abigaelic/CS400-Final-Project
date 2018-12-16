@@ -658,7 +658,8 @@ public class Main extends Application {
 						unappliedFilterList.add(appliedFilterList.get(i));
 						appliedFilterList.remove(i);
 					}
-					getFoodNames(foodData.getAllFoodItems());
+					getFoodNames(foodData.filterByNutrients(appliedFilterList));
+					//getFoodNames(foodData.getAllFoodItems());
 				}
 				
 				fileStage.close();
