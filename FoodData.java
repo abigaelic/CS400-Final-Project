@@ -151,7 +151,6 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					}
 
 						FoodItem foodItem = new FoodItem(id, name);		// create new food item 
-						System.out.println("Food item " + name + " created");
 						
 						foodItem.addNutrient(calories, calorieCount); // add calories to HashMap
 						foodItem.addNutrient(fat, fatGrams); // add fat to HashMap
@@ -346,15 +345,15 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					writer.print(foodItemList.get(f).getID()); // write id to file
 					writer.print(","); // separator
 					writer.print(foodItemList.get(f).getName()); // write name to file
-					writer.print(",calories, "); // write calories label to file
+					writer.print(",calories,"); // write calories label to file
 					writer.print(foodItemList.get(f).getNutrientValue("calories")); // calorie value
-					writer.print(",fat, "); // write fat label to file
+					writer.print(",fat,"); // write fat label to file
 					writer.print(foodItemList.get(f).getNutrientValue("fat")); // fat value
-					writer.print(",carbohydrate, "); // write carbohydrate label to file
+					writer.print(",carbohydrate,"); // write carbohydrate label to file
 					writer.print(foodItemList.get(f).getNutrientValue("carbohydrate")); // carb value
-					writer.print(",fiber, "); // write fiber label to file
+					writer.print(",fiber,"); // write fiber label to file
 					writer.print(foodItemList.get(f).getNutrientValue("fiber")); // fiber value
-					writer.print(",protein, "); // write protein label to file
+					writer.print(",protein,"); // write protein label to file
 					writer.println(foodItemList.get(f).getNutrientValue("protein")); // protein value
 				
 				} // END FOR block
@@ -369,9 +368,6 @@ public class FoodData implements FoodDataADT<FoodItem> {
 }
 	
 
-	// public static void main(String [] args){
-	     
-	//    }
 	 
 	    
 }
