@@ -906,7 +906,7 @@ public class Main extends Application {
 				if (group2.getSelectedToggle() == rb6) {operatorFilter = ">=";} if (group2.getSelectedToggle() == rb7) {operatorFilter = "==";}
 					if (group2.getSelectedToggle() == rb8) {operatorFilter = "<=";}	
 				
-				if (group1.getSelectedToggle() == rb1) {nutritionalGroupFilter = "fat";}  if (group1.getSelectedToggle() == rb2) {nutritionalGroupFilter = "carbohydrates";}
+				if (group1.getSelectedToggle() == rb1) {nutritionalGroupFilter = "fat";}  if (group1.getSelectedToggle() == rb2) {nutritionalGroupFilter = "carbohydrate";}
 				if (group1.getSelectedToggle() == rb3) {nutritionalGroupFilter = "fiber";} if (group1.getSelectedToggle() == rb4) {nutritionalGroupFilter = "calories";}
 				if (group1.getSelectedToggle() == rb5) {nutritionalGroupFilter = "protein";}
 				
